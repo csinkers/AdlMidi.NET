@@ -1,0 +1,12 @@
+.vs/
+.vscode/
+Debug/
+bin/
+obj/
+packages/
+
+*.filters
+*.lock
+*.lock~
+*.user
+
