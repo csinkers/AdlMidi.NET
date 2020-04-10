@@ -6,5 +6,7 @@ obj/
 packages/
 
 *.filters
+*.lock
+*.lock~
 *.user
 

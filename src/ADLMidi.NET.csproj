@@ -5,8 +5,12 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\SerdesNet\SerdesNet.csproj" />
+    <PackageReference Include="SerdesNet" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
