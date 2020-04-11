@@ -5,10 +5,11 @@
     /// </summary>
     public enum RhythmMode
     {
-        BassDrum = 0x08,
-        Snare = 0x10,
-        TomTom = 0x18,
-        Cymbal = 0x20,
-        HiHat = 0x28
+        Generic = 0,
+        Bass = 1,
+        Snare = 2,
+        Tom = 3,
+        Cymbal = 4,
+        HiHat = 5
     }
 }

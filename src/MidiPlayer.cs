@@ -21,7 +21,14 @@ namespace ADLMidi.NET
         }
 
         public void OpenFile(string filePath) => Check(AdlMidiImports.adl_openFile(_device, filePath));
-        public void OpenData(IntPtr mem, uint size) => Check(AdlMidiImports.adl_openData(_device, mem, size));
+        public unsafe void OpenData(ReadOnlySpan<byte> data)
+        {
+            fixed (byte* ptr = data)
+            {
+                Check(AdlMidiImports.adl_openData(_device, ptr, (uint)data.Length));
+            }
+        }
+
         public void Close() => AdlMidiImports.adl_close(_device);
         public void Reset() => AdlMidiImports.adl_reset(_device);
 
@@ -79,7 +86,14 @@ namespace ADLMidi.NET
         }
 
         public void OpenBankFile(string filePath) => Check(AdlMidiImports.adl_openBankFile(_device, filePath));
-        public void OpenBankData(IntPtr mem, uint size) => Check(AdlMidiImports.adl_openBankData(_device, mem, size));
+        public unsafe void OpenBankData(ReadOnlySpan<byte> bankData)
+        {
+            fixed (byte* data = bankData)
+            {
+                Check(AdlMidiImports.adl_openBankData(_device, data, (uint)bankData.Length));
+            }
+        }
+
         public void SetScaleModulators(int modulatorVolumeScaling) => AdlMidiImports.adl_setScaleModulators(_device, modulatorVolumeScaling);
         public void SetFullRangeBrightness(int fullRangeBrightness) => AdlMidiImports.adl_setFullRangeBrightness(_device, fullRangeBrightness);
         public void SetLoopEnabled(bool loopEnabled) => AdlMidiImports.adl_setLoopEnabled(_device, loopEnabled);
@@ -107,11 +121,25 @@ namespace ADLMidi.NET
         public string MetaTrackTitle(UIntPtr index) => AdlMidiImports.adl_metaTrackTitle(_device, index);
         public UIntPtr MetaMarkerCount() => AdlMidiImports.adl_metaMarkerCount(_device);
         public MarkerEntry MetaMarker(UIntPtr index) => AdlMidiImports.adl_metaMarker(_device, index);
-        public int Play(int sampleCount, IntPtr sampleBuffer) => Check(AdlMidiImports.adl_play(_device, sampleCount, sampleBuffer)); // sampleBuffer = short[]
+        public unsafe int Play(Span<short> buffer)
+        {
+            fixed(short* p = buffer)
+            {
+                return Check(AdlMidiImports.adl_play(_device, buffer.Length, p));
+            };
+        }
+
         public int PlayFormat(int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format) => Check(AdlMidiImports.adl_playFormat(_device, sampleCount, left, right, ref format));
-        public int Generate(int sampleCount, IntPtr sampleBuffer) => Check(AdlMidiImports.adl_generate(_device, sampleCount, sampleBuffer)); // sampleBuffer = short[]
+        public unsafe int Generate(Span<short> buffer)
+        {
+            fixed (short* ptr = buffer)
+            {
+                return Check(AdlMidiImports.adl_generate(_device, buffer.Length, ptr));
+            }
+        }
+
         public int GenerateFormat(int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format) => Check(AdlMidiImports.adl_generateFormat(_device, sampleCount, left, right, ref format));
-        public double TickEvents(double seconds, double granulality) => AdlMidiImports.adl_tickEvents(_device, seconds, granulality);
+        public double TickEvents(double seconds, double granularity) => AdlMidiImports.adl_tickEvents(_device, seconds, granularity);
         public void Panic() => AdlMidiImports.adl_panic(_device);
 
 #if false

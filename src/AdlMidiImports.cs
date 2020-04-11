@@ -328,7 +328,7 @@ namespace ADLMidi.NET
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern int adl_openBankData(IntPtr device, IntPtr mem, uint size);
+        public static extern unsafe int adl_openBankData(IntPtr device, byte* mem, uint size);
 
         /// <summary>
         /// Returns chip emulator name string
@@ -473,7 +473,7 @@ namespace ADLMidi.NET
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern int adl_openData(IntPtr device, IntPtr mem, uint size);
+        public static extern unsafe int adl_openData(IntPtr device, byte* mem, uint size);
 
         /// <summary>
         /// Resets MIDI player (per-channel setup) into initial state
@@ -665,11 +665,11 @@ namespace ADLMidi.NET
         /// <summary>
         /// Generate PCM signed 16-bit stereo audio output and iterate MIDI timers
         ///
-        /// Use this function when you are playing MIDI file loaded by `adl_openFile` or by `adl_openData`
-        /// with using of built-in MIDI sequencer.
+        /// Use this function when you are playing a MIDI file loaded by `adl_openFile` or `adl_openData`
+        /// when using the built-in MIDI sequencer.
         ///
-        /// Don't use count of frames, use instead count of samples. One frame is two samples.
-        /// So, for example, if you want to take 10 frames, you must to request amount of 20 samples!
+        /// Don't use count of frames, instead use the count of samples. One frame is two samples.
+        /// So, for example, if you want to take 10 frames, you must request 20 samples!
         ///
         /// Available when library is built with built-in MIDI Sequencer support.
         ///
@@ -679,16 +679,16 @@ namespace ADLMidi.NET
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern int adl_play(IntPtr device, int sampleCount, IntPtr sampleBuffer); // sampleBuffer = short[]
+        public static extern unsafe int adl_play(IntPtr device, int sampleCount, short* sampleBuffer);
 
         /// <summary>
         /// Generate PCM stereo audio output in sample format declared by given context and iterate MIDI timers
         ///
-        /// Use this function when you are playing MIDI file loaded by `adl_openFile` or by `adl_openData`
-        /// with using of built-in MIDI sequencer.
+        /// Use this function when you are playing MIDI file loaded by `adl_openFile` or `adl_openData`
+        /// when using the built-in MIDI sequencer.
         ///
-        /// Don't use count of frames, use instead count of samples. One frame is two samples.
-        /// So, for example, if you want to take 10 frames, you must to request amount of 20 samples!
+        /// Don't use count of frames, instead use the count of samples. One frame is two samples.
+        /// So, for example, if you want to take 10 frames, you must request 20 samples!
         ///
         /// Available when library is built with built-in MIDI Sequencer support.
         ///
@@ -709,7 +709,7 @@ namespace ADLMidi.NET
         /// an external MIDI sequencer. You must to request the amount of samples which is equal
         /// to the delta between of MIDI event rows. One MIDI row is a group of MIDI events
         /// are having zero delta/delay between each other. When you are receiving events in
-        /// real time, request the minimal possible delay value.
+        /// real time, request the minimum possible delay value.
         ///
         /// Don't use count of frames, use instead count of samples. One frame is two samples.
         /// So, for example, if you want to take 10 frames, you must to request amount of 20 samples!
@@ -720,7 +720,7 @@ namespace ADLMidi.NET
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern int adl_generate(IntPtr device, int sampleCount, IntPtr sampleBuffer); // sampleBuffer = short[]
+        public static extern unsafe int adl_generate(IntPtr device, int sampleCount, short* sampleBuffer); // sampleBuffer = short[]
 
         /// <summary>
         /// Generate PCM stereo audio output in sample format declared by given context without iteration of MIDI timers
@@ -729,7 +729,7 @@ namespace ADLMidi.NET
         /// an external MIDI sequencer. You must to request the amount of samples which is equal
         /// to the delta between of MIDI event rows. One MIDI row is a group of MIDI events
         /// are having zero delta/delay between each other. When you are receiving events in
-        /// real time, request the minimal possible delay value.
+        /// real time, request the minimum possible delay value.
         ///
         /// Don't use count of frames, use instead count of samples. One frame is two samples.
         /// So, for example, if you want to take 10 frames, you must to request amount of 20 samples!
@@ -754,12 +754,12 @@ namespace ADLMidi.NET
         /// as there are all using this function internally!!!
         ///
         /// @param device Instance of the library
-        /// @param seconds Previous delay. On a first moment, pass the `0.0`
-        /// @param granularity Minimal size of one MIDI tick in seconds.
+        /// @param seconds Previous delay. For the first moment, pass `0.0`
+        /// @param granularity Minimum size of one MIDI tick in seconds.
         /// @return desired number of seconds until next call. Pass this value into `seconds` field in next time
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern double adl_tickEvents(IntPtr device, double seconds, double granulality);
+        public static extern double adl_tickEvents(IntPtr device, double seconds, double granularity);
 
         #endregion
 
@@ -785,7 +785,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param note Note number to on [Between 0 and 127]
         /// @param velocity Velocity level [Between 0 and 127]
-        /// @return 1 when note was successfully started, 0 when note was rejected by any reason.
+        /// @return 1 when note was successfully started, 0 when note was rejected for any reason.
         /// </summary>
         [DllImport("ADLMIDI.dll")]
         public static extern int adl_rt_noteOn(IntPtr device, byte channel, byte note, byte velocity);
@@ -889,10 +889,10 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param msg Raw SysEx message buffer (must begin with 0xF0 and end with 0xF7)
         /// @param size Size of given SysEx message buffer
-        /// @return 1 when SysEx message was successfully processed, 0 when SysEx message was rejected by any reason
+        /// @return 1 when SysEx message was successfully processed, 0 when SysEx message was rejected for any reason
         /// </summary>
         [DllImport("ADLMIDI.dll")]
-        public static extern int adl_rt_systemExclusive(IntPtr device, IntPtr message, UIntPtr size);
+        public static extern unsafe int adl_rt_systemExclusive(IntPtr device, byte* message, UIntPtr size);
 
         #endregion
 
@@ -939,18 +939,18 @@ namespace ADLMidi.NET
 
 #if false // Variadic delegate, ahh! Will worry about it if and when I need it.
         /// <summary>
-         /// Debug messages callback
+        /// Debug messages callback
         /// @param userdata Pointer to user data (usually, context of something)
-        /// @param fmt Format strign output (in context of `printf()` standard function)
+        /// @param fmt Format string output (in context of `printf()` standard function)
          /// </summary>
         typedef void (*DebugMessageHook)(IntPtr userdata, string fmt, ...);
 
         /// <summary>
-         /// Set debug message hook
+        /// Set debug message hook
         /// @param device Instance of the library
         /// @param debugMessageHook Pointer to the callback function which will be called on every debug message
         /// @param userData Pointer to user data which will be passed through the callback.
-         /// </summary>
+        /// </summary>
         [DllImport("ADLMIDI.dll")]
         public static extern void adl_setDebugMessageHook(IntPtr device, DebugMessageHook debugMessageHook, IntPtr userData);
 #endif
