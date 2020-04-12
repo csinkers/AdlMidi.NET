@@ -60,5 +60,40 @@ namespace ADLMidi.NET
         public ushort Version { get; set; } = 3;
         public GlobalBankFlags GlobalFlags { get; set; }
         public VolumeModel VolumeModel { get; set; }
+
+        public WoplFile() { }
+        public WoplFile(GlobalTimbreLibrary timbreLibrary)
+        {
+            Version = 3;
+            GlobalFlags = GlobalBankFlags.DeepTremolo | GlobalBankFlags.DeepVibrato;
+            VolumeModel = VolumeModel.Auto;
+
+            Melodic.Add(new WoplBank { Id = 0, Name = "" });
+            Percussion.Add(new WoplBank { Id = 0, Name = "" });
+
+            for(int i = 0; i < timbreLibrary.Data.Count; i++)
+            {
+                var timbre = timbreLibrary.Data[i];
+                WoplInstrument x =
+                    i < 128
+                        ? Melodic[0].Instruments[i] ?? new WoplInstrument()
+                        : Percussion[0].Instruments[i - 128 + 35] ?? new WoplInstrument();
+
+                x.Name = "";
+                x.NoteOffset1 = timbre.MidiPatchNumber;
+                x.NoteOffset2 = timbre.MidiBankNumber;
+                x.InstrumentMode = InstrumentMode.TwoOperator;
+                x.FbConn1C0 = timbre.FeedbackConnection;
+                x.Operator0 = timbre.Carrier;
+                x.Operator1 = timbre.Modulation;
+                x.Operator2 = Operator.Blank;
+                x.Operator3 = Operator.Blank;
+
+                if (i < 128)
+                    Melodic[0].Instruments[i] = x;
+                else
+                    Percussion[0].Instruments[i - 128 + 35] = x;
+            }
+        }
     }
 }
