@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SerdesNet" Version="1.0.2" />
+    <PackageReference Include="SerdesNet" Version="1.0.4" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
