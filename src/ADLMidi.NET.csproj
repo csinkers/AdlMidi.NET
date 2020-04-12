@@ -2,8 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Cam Sinclair</Authors>
+    <Description>A .NET wrapper for the libADLMIDI library, a free Software MIDI synthesizer library with OPL3 emulation</Description>
+    <Copyright>2020 Cam Sinclair</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/CSinkers/AdlMidi.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>MIDI OPL3 ADLMIDI</PackageTags>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <version>1.0.0</version>
   </PropertyGroup>
 
   <ItemGroup>
