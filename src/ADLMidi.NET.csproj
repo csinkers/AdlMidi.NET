@@ -13,7 +13,7 @@
     <PackageTags>MIDI OPL3 ADLMIDI</PackageTags>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </PropertyGroup>
 
   <ItemGroup>
