@@ -2,7 +2,7 @@
 
 namespace ADLMidi.NET
 {
-    public class MidiPlayer
+    public sealed class MidiPlayer : IDisposable
     {
         readonly IntPtr _device;
 
@@ -27,6 +27,12 @@ namespace ADLMidi.NET
             {
                 Check(AdlMidiImports.adl_openData(_device, ptr, (uint)data.Length));
             }
+        }
+
+        public void Dispose()
+        {
+            if (_device != IntPtr.Zero)
+                Close();
         }
 
         public void Close() => AdlMidiImports.adl_close(_device);
@@ -141,6 +147,7 @@ namespace ADLMidi.NET
         public int GenerateFormat(int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format) => Check(AdlMidiImports.adl_generateFormat(_device, sampleCount, left, right, ref format));
         public double TickEvents(double seconds, double granularity) => AdlMidiImports.adl_tickEvents(_device, seconds, granularity);
         public void Panic() => AdlMidiImports.adl_panic(_device);
+        public void SetNoteHook(NoteHook noteHook, IntPtr userData) => AdlMidiImports.adl_setNoteHook(_device, noteHook, userData);
 
 #if false
         public void RealTimeResetState() => AdlMidiImports.adl_rt_resetState(_device);
@@ -160,7 +167,6 @@ namespace ADLMidi.NET
 
 #if false
         public void SetRawEventHook(AdlMidiImports.RawEventHook rawEventHook, IntPtr userData) => AdlMidiImports.adl_setRawEventHook(_device, rawEventHook, userData);
-        public void SetNoteHook(AdlMidiImports.NoteHook noteHook, IntPtr userData) => AdlMidiImports.adl_setNoteHook(_device, noteHook, userData);
         public int DescribeChannels(string text, string attr, UIntPtr size) => AdlMidiImports.adl_describeChannels(_device, text, attr, size);
 #endif
     }

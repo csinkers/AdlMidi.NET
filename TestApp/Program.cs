@@ -9,34 +9,93 @@ namespace TestApp
 {
     class Program
     {
+        const int SampleRate = 44100;
+        const string newWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
+        static readonly StringBuilder NoteWriter = new StringBuilder();
+        static double Time = 0;
+        
         static void Main()
         {
             // WoplFile realWopl = ReadWopl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.wopl");
             // WriteWopl(realWopl, @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_ROUNDTRIP.wopl");
+
             GlobalTimbreLibrary oplFile = ReadOpl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.OPL");
             WoplFile wopl = OplToWopl(oplFile);
-            const string newWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
             WriteWopl(wopl, newWoplPath);
 
-            using var outputFile = new WavFile(@"C:\Depot\bb\ualbion\re\Songs0_03.wav", 44100, 2, 2);
             byte[] bankData = File.ReadAllBytes(newWoplPath);
+            for (int i = 0; i <= 45; i++)
+            {
+                Console.WriteLine($"Dumping {i}");
+                //ExportAlbionSong(i, bankData);
+                ExportSongEvents(i, bankData);
+            }
 
-            var player = AdlMidi.Init();
+            File.WriteAllText(@"C:\Depot\bb\ualbion\re\SongsPlayed.txt", NoteWriter.ToString());
+        }
+
+        static void ExportAlbionSong(int songId, byte[] bankData)
+        {
+            string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
+            if (!File.Exists(path))
+                return;
+
+            using var outputFile = new WavFile(
+                $@"C:\Depot\bb\ualbion\re\Songs{songId/100}_{songId%100:D2}.wav",
+                SampleRate, 2, 2);
+
+            using var player = AdlMidi.Init();
+
+            NoteWriter.AppendLine($"Song {songId}");
+            player.SetNoteHook(NoteHook, IntPtr.Zero);
             player.OpenBankData(bankData);
-            player.OpenFile(@"C:\Depot\bb\ualbion\Data\Exported\SONGS0.XLD\03.xmi");
+            player.OpenFile(path);
             player.SetLoopEnabled(false);
             short[] bufferArray = new short[4096];
+            long totalSamples = 0;
             for(;;)
             {
+                Time = (double)totalSamples / (2 * SampleRate);
                 int samplesWritten = player.Play(bufferArray);
+                totalSamples += samplesWritten;
+
                 if (samplesWritten <= 0)
                     break;
 
                 var byteSpan = MemoryMarshal.Cast<short, byte>(new ReadOnlySpan<short>(bufferArray, 0, samplesWritten));
                 outputFile.Write(byteSpan);
             }
+            NoteWriter.AppendLine();
+        }
 
-            player.Close();
+        public static void ExportSongEvents(int songId, byte[] bankData)
+        {
+            string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
+            if (!File.Exists(path))
+                return;
+
+            using var player = AdlMidi.Init();
+
+            NoteWriter.AppendLine($"Song {songId}");
+            player.OpenBankData(bankData);
+            player.SetNoteHook(NoteHook, IntPtr.Zero);
+            player.OpenFile(path);
+            player.SetLoopEnabled(false);
+            double nextTime = 0;
+            Time = 0;
+            const double minTick = 1.0;
+            while (player.AtEnd() == 0)
+            {
+                Time += nextTime;
+                nextTime = player.TickEvents(nextTime, minTick);
+            }
+
+            NoteWriter.AppendLine();
+        }
+
+        static void NoteHook(IntPtr userdata, int adlchannel, int note, int ins, int pressure, double bend)
+        {
+            NoteWriter.AppendLine($"    {Time}: Chan{adlchannel} Note{note} Instrument{ins} Pressure{pressure} Bend{bend}");
         }
 
         static WoplFile OplToWopl(GlobalTimbreLibrary oplFile)

@@ -30,6 +30,28 @@ using System.Runtime.InteropServices;
 namespace ADLMidi.NET
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
+
+    /// <summary>
+    /// Raw event callback
+    /// @param user data Pointer to user data (usually, context of something)
+    /// @param type MIDI event type
+    /// @param subtype MIDI event sub-type (special events only)
+    /// @param channel MIDI channel
+    /// @param data Raw event data
+    /// @param len Length of event data
+    /// </summary>
+    public delegate void RawEventHook(IntPtr userData, byte type, byte subType, byte channel, IntPtr data, UIntPtr length);
+
+    /// <summary>
+    /// Note on/off callback
+    /// @param user data Pointer to user data (usually, context of something)
+    /// @param adlChannel Chip channel where note was played
+    /// @param note Note number [between 0 and 127]
+    /// @param pressure Velocity level, or -1 when it's note off event
+    /// @param bend Pitch bend offset value
+    /// </summary>
+    public delegate void NoteHook(IntPtr userData, int adlChannel, int note, int ins, int pressure, double bend);
+
     static class AdlMidiImports
     {
         public static readonly Version AdlMidiVersion = new Version(1, 4, 1);
@@ -747,8 +769,8 @@ namespace ADLMidi.NET
         /// <summary>
         /// Periodic tick handler.
         ///
-        /// Notice: The function is provided to use it with Hardware OPL3 mode or for the purpose to iterate
-        /// MIDI playback without of sound generation.
+        /// Notice: The function is provided to use it with Hardware OPL3 mode or for the purpose of iterating
+        /// MIDI playback without sound generation.
         ///
         /// DON'T USE IT TOGETHER WITH adl_play() and adl_playFormat() calls
         /// as there are all using this function internally!!!
@@ -897,27 +919,6 @@ namespace ADLMidi.NET
         #endregion
 
         #region Hooks and debugging 
-
-        /// <summary>
-        /// Raw event callback
-        /// @param user data Pointer to user data (usually, context of something)
-        /// @param type MIDI event type
-        /// @param subtype MIDI event sub-type (special events only)
-        /// @param channel MIDI channel
-        /// @param data Raw event data
-        /// @param len Length of event data
-        /// </summary>
-        public delegate void RawEventHook(IntPtr userData, byte type, byte subType, byte channel, IntPtr data, UIntPtr length);
-
-        /// <summary>
-        /// Note on/off callback
-        /// @param user data Pointer to user data (usually, context of something)
-        /// @param adlChannel Chip channel where note was played
-        /// @param note Note number [between 0 and 127]
-        /// @param pressure Velocity level, or -1 when it's note off event
-        /// @param bend Pitch bend offset value
-        /// </summary>
-        public delegate void NoteHook(IntPtr userData, int adlChannel, int note, int ins, int pressure, double bend);
 
         /// <summary>
         /// Set raw MIDI event hook
