@@ -6,18 +6,19 @@
     <Authors>Cam Sinclair</Authors>
     <Description>A .NET wrapper for the libADLMIDI library, a free Software MIDI synthesizer library with OPL3 emulation</Description>
     <Copyright>2020 Cam Sinclair</Copyright>
+    <PackageId>ADLMidi.NET</PackageId>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/CSinkers/AdlMidi.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
     <PackageTags>MIDI OPL3 ADLMIDI</PackageTags>
+    <PackageProjectUrl>https://github.com/CSinkers/AdlMidi.NET</PackageProjectUrl>
     <LangVersion>latest</LangVersion>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SerdesNet" Version="1.0.4" />
+    <PackageReference Include="SerdesNet" Version="1.1.1" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 

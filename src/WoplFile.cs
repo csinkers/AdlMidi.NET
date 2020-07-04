@@ -48,10 +48,10 @@ namespace ADLMidi.NET
 
             // Load instruments (128 per bank)
             foreach (var bank in w.Melodic)
-                s.List(bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
+                s.List(nameof(w.Melodic), bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
 
             foreach (var bank in w.Percussion)
-                s.List(bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
+                s.List(nameof(w.Percussion), bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
 
             s.PopVersion();
             return w;

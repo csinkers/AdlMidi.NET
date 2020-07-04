@@ -72,7 +72,7 @@ namespace ADLMidi.NET
                 }, s);
             }
 
-            s.List(library.Data, headers.Count - 1, TimbreData.Serdes);
+            s.List(nameof(library.Data), library.Data, headers.Count - 1, TimbreData.Serdes);
             for (int i = 0; i < headers.Count - 1; i++)
             {
                 library.Data[i].MidiPatchNumber = headers[i].MidiPatchNumber;
