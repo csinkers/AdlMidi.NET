@@ -18,7 +18,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SerdesNet" Version="1.1.1" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
@@ -26,6 +25,13 @@
     <None Update="ADLMIDI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="!Exists('..\..\SerdesNet')">
+    <PackageReference Include="SerdesNet" Version="1.1.2" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('..\..\SerdesNet')">
+    <ProjectReference Include="..\..\SerdesNet\SerdesNet.csproj" />
   </ItemGroup>
 
 </Project>
