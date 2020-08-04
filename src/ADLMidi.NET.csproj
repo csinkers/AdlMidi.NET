@@ -14,7 +14,7 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
   </PropertyGroup>
 
   <ItemGroup>
