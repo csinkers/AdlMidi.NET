@@ -21,3 +21,38 @@ The library is licensed under in it's parts LGPL 2.1+, GPL v2+, GPL v3+, and MIT
 * WOPL reader and writer module is licensed under MIT.
 * Other parts of library are licensed under GPLv3+.
 
+# libADLMIDI build settings
+
+The libADLMIDI.so / .dll files incuded in the NuGet package were generated via the following commands:
+
+## Linux:
+`
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release \
+    -DlibADLMIDI_STATIC=OFF \
+    -DlibADLMIDI_SHARED=ON \
+    -DWITH_EMBEDDED_BANKS=OFF \
+    -DWITH_MUS_SUPPORT=OFF \
+    -DWITH_XMI_SUPPORT=ON \
+    -DUSE_DOSBOX_EMULATOR=OFF \
+    -DUSE_NUKED_EMULATOR=ON \
+    -DUSE_OPAL_EMULATOR=OFF \
+    -DUSE_JAVA_EMULATOR=OFF \
+    ..
+make
+[ -d ../../ADLMidi.NET/runtimes/linux-x64/native ] || mkdir -p ../../ADLMidi.NET/runtimes/linux-x64/native
+cp -L libADLMIDI.so ../../ADLMidi.NET/runtimes/linux-x64/native
+`
+
+## Windows:
+* Run CMake setup program
+* Pick libADLMIDI directory
+* Pick release build
+* Disable all emulators other than Nuked
+* Disable static, enable shared
+* Ensure XMI support and MIDI sequencer are enabled
+* Disable MUS support and embedded banks (not required)
+* Build generated solution file using VS2019
+* Copy resultant dll to ADLMidi.NET runtimes/win-x64/native directory
+
