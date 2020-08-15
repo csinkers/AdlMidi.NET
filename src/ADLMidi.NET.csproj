@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NativeAssetsPath Condition="'$(NativeAssetsPath)' == ''">$(RepositoryRootDirectory)/src/</NativeAssetsPath>
     <Authors>Cam Sinclair</Authors>
     <Description>A .NET wrapper for the libADLMIDI library, a free Software MIDI synthesizer library with OPL3 emulation</Description>
     <Copyright>2020 Cam Sinclair</Copyright>
@@ -15,18 +14,11 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-      <Content Include="build\net40\ADLMidi.NET.targets">
-          <PackagePath>build/net40/ADLMidi.NET.targets</PackagePath>
-          <Pack>true</Pack>
-      </Content>
   </ItemGroup>
 
   <ItemGroup Condition="!Exists('..\..\SerdesNet')">
@@ -36,18 +28,8 @@
     <ProjectReference Include="..\..\SerdesNet\SerdesNet.csproj" />
   </ItemGroup>
 
-  <Target Name="BeforePackage" BeforeTargets="AssignTargetPaths">
-    <ItemGroup>
-      <_NativeAssetName Include="$(Configuration)/win-x86/ADLMIDI.dll" PackagePath="runtimes/win-x86/native" />
-      <_NativeAssetName Include="$(Configuration)/win-x64/ADLMIDI.dll" PackagePath="runtimes/win-x64/native" />
-      <_NativeAssetName Include="$(Configuration)/linux-x64/libADLMIDI.so" PackagePath="runtimes/linux-x64/native" />
-
-      <_ExistingAssets Include="@(_NativeAssetName)" Condition="Exists('$(NativeAssetsPath)/%(Identity)')" />
-
-      <Content Include="@(_ExistingAssets->'$(NativeAssetsPath)/%(Identity)')" CopyToOutputDirectory="PreserveNewest" PackagePath="%(PackagePath)" Pack="true" />
-      <Message Text="Hello world" Importance="high" />
-      <Message Text="Target: @(_ExistingAssets->'$(NativeAssetsPath)/%(Identity)') PackagePath: %(PackagePath)" Importance="high" />
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <Content Include="runtimes\**" CopyToOutputDirectory="PreserveNewest" PackagePath="runtimes" Visible="false" />
+  </ItemGroup>
 
 </Project>
