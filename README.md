@@ -26,12 +26,12 @@ The library is licensed under in it's parts LGPL 2.1+, GPL v2+, GPL v3+, and MIT
 The libADLMIDI.so / .dll files incuded in the NuGet package were generated via the following commands:
 
 ## Linux:
-`
+```
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
     -DlibADLMIDI_STATIC=OFF \
-    -DlibADLMIDI_SHARED=ON \
+    -DlibADLMIDI_SHARED=ON \\
     -DWITH_EMBEDDED_BANKS=OFF \
     -DWITH_MUS_SUPPORT=OFF \
     -DWITH_XMI_SUPPORT=ON \
@@ -43,7 +43,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 make
 [ -d ../../ADLMidi.NET/runtimes/linux-x64/native ] || mkdir -p ../../ADLMidi.NET/runtimes/linux-x64/native
 cp -L libADLMIDI.so ../../ADLMidi.NET/runtimes/linux-x64/native
-`
+```
 
 ## Windows:
 * Run CMake setup program
