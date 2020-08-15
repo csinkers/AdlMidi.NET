@@ -54,6 +54,8 @@ namespace ADLMidi.NET
 
     static class AdlMidiImports
     {
+        const string LibraryName = "libadlmidi";
+
         public static readonly Version AdlMidiVersion = new Version(1, 4, 1);
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace ADLMidi.NET
         /// @param numChips Count of virtual chips to emulate
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setNumChips(IntPtr device, int numChips);
 
         /// <summary>
@@ -70,7 +72,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Count of working chip emulators
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getNumChips(IntPtr device);
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Count of working chip emulators
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getNumChipsObtained(IntPtr device);
 
         /// <summary>
@@ -90,21 +92,21 @@ namespace ADLMidi.NET
         /// @param bank Number of embedded bank
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setBank(IntPtr device, int bank);
 
         /// <summary>
         /// Returns total number of available banks
         /// @return Total number of available embedded banks
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getBanksCount();
 
         /// <summary>
         /// Returns pointer to array of names of every bank
         /// @return Array of strings containing the name of every embedded bank
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string[] adl_getBankNames();
 
         /// <summary>
@@ -134,7 +136,7 @@ namespace ADLMidi.NET
         /// @param banks Count of bank slots to pre-allocate.
         /// @return actual capacity of reserved bank slots.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_reserveBanks(IntPtr device, uint banks);
         /// <summary>
         /// Gets the bank designated by the identifier, optionally creating if it does not exist
@@ -144,7 +146,7 @@ namespace ADLMidi.NET
         /// @param bank Reference to dynamic bank
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getBank(IntPtr device, ref BankId id, BankAccessFlags flags, out Bank bank);
         /// <summary>
         /// Gets the identifier of a bank
@@ -153,7 +155,7 @@ namespace ADLMidi.NET
         /// @param id Identifier of dynamic bank
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getBankId(IntPtr device, ref Bank bank, out BankId id);
         /// <summary>
         /// Removes a bank
@@ -161,7 +163,7 @@ namespace ADLMidi.NET
         /// @param bank Reference to dynamic bank
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_removeBank(IntPtr device, ref Bank bank);
         /// <summary>
         /// Gets the first bank
@@ -169,7 +171,7 @@ namespace ADLMidi.NET
         /// @param bank Reference to dynamic bank
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getFirstBank(IntPtr device, out Bank bank);
         /// <summary>
         /// Iterates to the next bank
@@ -177,7 +179,7 @@ namespace ADLMidi.NET
         /// @param bank Reference to dynamic bank
         /// @return 0 on success, &lt;0 when any error has occurred or end has been reached.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getNextBank(IntPtr device, out Bank bank);
         /// <summary>
         /// Gets the nth instrument in the bank [0..127]
@@ -187,7 +189,7 @@ namespace ADLMidi.NET
         /// @param ins Instrument entry
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getInstrument(IntPtr device, ref Bank bank, uint index, out Instrument ins);
         /// <summary>
         /// Sets the nth instrument in the bank [0..127]
@@ -199,7 +201,7 @@ namespace ADLMidi.NET
         ///
         /// This function allows to override an instrument on the fly
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setInstrument(IntPtr device, ref Bank bank, uint index, ref Instrument ins);
         /// <summary>
         /// Loads the melodic or percussive part of the nth embedded bank
@@ -208,7 +210,7 @@ namespace ADLMidi.NET
         /// @param num Number of embedded bank to load into the current bank array
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_loadEmbeddedBank(IntPtr device, ref Bank bank, int num);
 
         /// <summary>
@@ -224,7 +226,7 @@ namespace ADLMidi.NET
         /// @param ops4 Count of four-op channels to allocate between all emulating chips
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setNumFourOpsChn(IntPtr device, int ops4);
 
         /// <summary>
@@ -232,7 +234,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return 0 on success, &lt;-1 when any error has occurred, but, -1 - "auto"
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getNumFourOpsChn(IntPtr device);
 
         /// <summary>
@@ -240,7 +242,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getNumFourOpsChnObtained(IntPtr device);
 
         /// <summary>
@@ -248,7 +250,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param vibratoMode 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setHVibrato(IntPtr device, int vibratoMode);
 
         /// <summary>
@@ -256,7 +258,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return deep vibrato state on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getHVibrato(IntPtr device);
 
         /// <summary>
@@ -264,7 +266,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param tremoloMode 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setHTremolo(IntPtr device, int tremoloMode);
 
         /// <summary>
@@ -272,7 +274,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return deep tremolo state on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_getHTremolo(IntPtr device);
 
         /// <summary>
@@ -280,7 +282,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param modulatorVolumeScaling 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setScaleModulators(IntPtr device, int modulatorVolumeScaling);
 
         /// <summary>
@@ -292,7 +294,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param fullRangeBrightness 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setFullRangeBrightness(IntPtr device, int fullRangeBrightness);
 
         /// <summary>
@@ -300,7 +302,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param loopEnabled 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setLoopEnabled(IntPtr device, bool loopEnabled);
 
         /// <summary>
@@ -308,7 +310,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param softPanEnabled 0 - disabled, 1 - enabled
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setSoftPanEnabled(IntPtr device, bool softPanEnabled);
 
         /// <summary>
@@ -316,7 +318,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param volumeModel Volume model type (#VolumeModel)
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setVolumeRangeModel(IntPtr device, VolumeModel volumeModel);
 
         /// <summary>
@@ -324,7 +326,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return volume model on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern VolumeModel adl_getVolumeRangeModel(IntPtr device);
 
         /// <summary>
@@ -336,7 +338,7 @@ namespace ADLMidi.NET
         /// @param filePath Absolute or relative path to the WOPL bank file. UTF8 encoding is required, even on Windows.
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_openBankFile(IntPtr device, string filePath);
 
         /// <summary>
@@ -349,7 +351,7 @@ namespace ADLMidi.NET
         /// @param size Size of given memory block
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern unsafe int adl_openBankData(IntPtr device, byte* mem, uint size);
 
         /// <summary>
@@ -357,7 +359,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Understandable name of current OPL3 emulator
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_chipEmulatorName(IntPtr device);
 
         /// <summary>
@@ -366,7 +368,7 @@ namespace ADLMidi.NET
         /// @param emulator Type of emulator (#Emulator)
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_switchEmulator(IntPtr device, Emulator emulator);
 
         /// <summary>
@@ -389,7 +391,7 @@ namespace ADLMidi.NET
         /// @param enabled 0 - disabled, 1 - enabled
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setRunAtPcmRate(IntPtr device, bool enabled);
 
         /// <summary>
@@ -398,7 +400,7 @@ namespace ADLMidi.NET
         /// @param id 4-bit device identifier
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setDeviceIdentifier(IntPtr device, uint id);
 
         /// <summary>
@@ -409,14 +411,14 @@ namespace ADLMidi.NET
         /// Returns string which contains a version number
         /// @return String which contains a version of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_linkedLibraryVersion();
 
         /// <summary>
         /// Returns structure which contains a version number of library
         /// @return Library version context structure which contains version number of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern AdlVersion adl_linkedVersion();
 
 
@@ -432,7 +434,7 @@ namespace ADLMidi.NET
         ///
         /// @return String with error message related to library initialization
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_errorString();
 
         /// <summary>
@@ -440,7 +442,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return String with error message related to last function call returned non-zero value.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_errorInfo(IntPtr device);
 
         #endregion
@@ -458,14 +460,14 @@ namespace ADLMidi.NET
         /// @param sampleRate Output sample rate
         /// @return Instance of the library. If NULL was returned, check the `adl_errorString` message for more info.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern IntPtr adl_init(long sampleRate);
 
         /// <summary>
         /// Close and delete ADLMIDI device
         /// @param device Instance of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_close(IntPtr device);
 
         #endregion
@@ -481,7 +483,7 @@ namespace ADLMidi.NET
         /// @param filePath Absolute or relative path to the music file. UTF8 encoding is required, even on Windows.
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_openFile(IntPtr device, string filePath);
 
         /// <summary>
@@ -494,14 +496,14 @@ namespace ADLMidi.NET
         /// @param size Size of given memory block
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern unsafe int adl_openData(IntPtr device, byte* mem, uint size);
 
         /// <summary>
         /// Resets MIDI player (per-channel setup) into initial state
         /// @param device Instance of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_reset(IntPtr device);
 
         /// <summary>
@@ -512,7 +514,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Total song length in seconds
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern double adl_totalTimeLength(IntPtr device);
 
         /// <summary>
@@ -523,7 +525,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Time position in seconds of loop start point, or -1 when file has no loop points
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern double adl_loopStartTime(IntPtr device);
 
         /// <summary>
@@ -534,7 +536,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Time position in seconds of loop end point, or -1 when file has no loop points
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern double adl_loopEndTime(IntPtr device);
 
         /// <summary>
@@ -545,7 +547,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Current time position in seconds
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern double adl_positionTell(IntPtr device);
 
         /// <summary>
@@ -556,7 +558,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param seconds Destination time position in seconds to seek
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_positionSeek(IntPtr device, double seconds);
 
         /// <summary>
@@ -566,7 +568,7 @@ namespace ADLMidi.NET
         ///
         /// @param device Instance of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_positionRewind(IntPtr device);
 
         /// <summary>
@@ -577,7 +579,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @param tempo Tempo multiplier value: 1.0 - original tempo, &gt;1 - play faster, &lt;1 - play slower
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setTempo(IntPtr device, double tempo);
 
         /// <summary>
@@ -585,7 +587,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return 1 when end of sing has been reached, otherwise, 0 will be returned. &lt;0 is returned on any error
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_atEnd(IntPtr device);
 
         /// <summary>
@@ -593,7 +595,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Count of tracks in the current sequence
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern UIntPtr adl_trackCount(IntPtr device);
 
         /// <summary>
@@ -602,7 +604,7 @@ namespace ADLMidi.NET
         /// @param trackNumber Identifier of the designated track.
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setTrackOptions(IntPtr device, UIntPtr trackNumber, TrackOptions trackOptions);
 
         /// <summary>
@@ -620,7 +622,7 @@ namespace ADLMidi.NET
         /// @param userData Instance of the library
         /// @return 0 on success, &lt;0 when any error has occurred
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_setTriggerHandler(IntPtr device, TriggerHandler handler, IntPtr userData);
 
         #endregion
@@ -632,7 +634,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return A string that contains music title
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_metaMusicTitle(IntPtr device);
 
         /// <summary>
@@ -640,7 +642,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return A string that contains copyright notice, otherwise NULL
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_metaMusicCopyright(IntPtr device);
 
         /// <summary>
@@ -651,7 +653,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Count of available MIDI tracks, otherwise NULL
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern UIntPtr adl_metaTrackTitleCount(IntPtr device);
 
         /// <summary>
@@ -660,7 +662,7 @@ namespace ADLMidi.NET
         /// @param index Index of the track to retrieve the title
         /// @return A string that contains track title, otherwise NULL.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern string adl_metaTrackTitle(IntPtr device, UIntPtr index);
 
         /// <summary>
@@ -668,7 +670,7 @@ namespace ADLMidi.NET
         /// @param device Instance of the library
         /// @return Count of available MIDI markers
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern UIntPtr adl_metaMarkerCount(IntPtr device);
 
         /// <summary>
@@ -677,7 +679,7 @@ namespace ADLMidi.NET
         /// @param index Index of the marker to retrieve it.
         /// @return MIDI Marker description structure.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern MarkerEntry adl_metaMarker(IntPtr device, UIntPtr index);
 
         #endregion
@@ -700,7 +702,7 @@ namespace ADLMidi.NET
         /// @param out Pointer to output with 16-bit stereo PCM output
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern unsafe int adl_play(IntPtr device, int sampleCount, short* sampleBuffer);
 
         /// <summary>
@@ -721,7 +723,7 @@ namespace ADLMidi.NET
         /// @param format Destination PCM format format context
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_playFormat(IntPtr device, int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format);
 
         /// <summary>
@@ -741,7 +743,7 @@ namespace ADLMidi.NET
         /// @param out Pointer to output with 16-bit stereo PCM output
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern unsafe int adl_generate(IntPtr device, int sampleCount, short* sampleBuffer); // sampleBuffer = short[]
 
         /// <summary>
@@ -763,7 +765,7 @@ namespace ADLMidi.NET
         /// @param format Destination PCM format format context
         /// @return Count of given samples, otherwise, 0 or when catching an error while playing
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_generateFormat(IntPtr device, int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format);
 
         /// <summary>
@@ -780,7 +782,7 @@ namespace ADLMidi.NET
         /// @param granularity Minimum size of one MIDI tick in seconds.
         /// @return desired number of seconds until next call. Pass this value into `seconds` field in next time
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern double adl_tickEvents(IntPtr device, double seconds, double granularity);
 
         #endregion
@@ -791,14 +793,14 @@ namespace ADLMidi.NET
         /// Force Off all notes on all channels
         /// @param device Instance of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_panic(IntPtr device);
 
         /// <summary>
         /// Reset states of all controllers on all MIDI channels
         /// @param device Instance of the library
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_resetState(IntPtr device);
 
         /// <summary>
@@ -809,7 +811,7 @@ namespace ADLMidi.NET
         /// @param velocity Velocity level [Between 0 and 127]
         /// @return 1 when note was successfully started, 0 when note was rejected for any reason.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_rt_noteOn(IntPtr device, byte channel, byte note, byte velocity);
 
         /// <summary>
@@ -818,7 +820,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param note Note number to off [Between 0 and 127]
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_noteOff(IntPtr device, byte channel, byte note);
 
         /// <summary>
@@ -828,7 +830,7 @@ namespace ADLMidi.NET
         /// @param note Note number to affect by aftertouch event [Between 0 and 127]
         /// @param atVal After-Touch value [Between 0 and 127]
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_noteAfterTouch(IntPtr device, byte channel, byte note, byte atVal);
 
         /// <summary>
@@ -837,7 +839,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param atVal After-Touch level [Between 0 and 127]
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_channelAfterTouch(IntPtr device, byte channel, byte atVal);
 
         /// <summary>
@@ -847,7 +849,7 @@ namespace ADLMidi.NET
         /// @param type Type of the controller [Between 0 and 255]
         /// @param value Value of the controller event [Between 0 and 127]
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_controllerChange(IntPtr device, byte channel, byte type, byte value);
 
         /// <summary>
@@ -856,7 +858,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param patch Patch number [Between 0 and 127]
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_patchChange(IntPtr device, byte channel, byte patch);
 
         /// <summary>
@@ -865,7 +867,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param pitch 24-bit pitch bend value
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_pitchBend(IntPtr device, byte channel, ushort pitch);
 
         /// <summary>
@@ -875,7 +877,7 @@ namespace ADLMidi.NET
         /// @param msb MSB part of 24-bit pitch bend value
         /// @param lsb LSB part of 24-bit pitch bend value
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_pitchBendML(IntPtr device, byte channel, byte msb, byte lsb);
 
         /// <summary>
@@ -884,7 +886,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param lsb LSB value of the MIDI bank number
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_bankChangeLSB(IntPtr device, byte channel, byte lsb);
 
         /// <summary>
@@ -893,7 +895,7 @@ namespace ADLMidi.NET
         /// @param channel Target MIDI channel [Between 0 and 16]
         /// @param msb MSB value of the MIDI bank number
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_bankChangeMSB(IntPtr device, byte channel, byte msb);
 
         /// <summary>
@@ -903,7 +905,7 @@ namespace ADLMidi.NET
         /// @param bank Bank number as concatenated signed 16-bit value of MSB and LSB parts.
         /// </summary>
 
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_rt_bankChange(IntPtr device, byte channel, short bank);
 
         /// <summary>
@@ -913,7 +915,7 @@ namespace ADLMidi.NET
         /// @param size Size of given SysEx message buffer
         /// @return 1 when SysEx message was successfully processed, 0 when SysEx message was rejected for any reason
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern unsafe int adl_rt_systemExclusive(IntPtr device, byte* message, UIntPtr size);
 
         #endregion
@@ -926,7 +928,7 @@ namespace ADLMidi.NET
         /// @param rawEventHook Pointer to the callback function which will be called on every MIDI event
         /// @param userData Pointer to user data which will be passed through the callback.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setRawEventHook(IntPtr device, RawEventHook rawEventHook, IntPtr userData);
 
         /// <summary>
@@ -935,7 +937,7 @@ namespace ADLMidi.NET
         /// @param noteHook Pointer to the callback function which will be called on every noteOn MIDI event
         /// @param userData Pointer to user data which will be passed through the callback.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setNoteHook(IntPtr device, NoteHook noteHook, IntPtr userData);
 
 #if false // Variadic delegate, ahh! Will worry about it if and when I need it.
@@ -952,7 +954,7 @@ namespace ADLMidi.NET
         /// @param debugMessageHook Pointer to the callback function which will be called on every debug message
         /// @param userData Pointer to user data which will be passed through the callback.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern void adl_setDebugMessageHook(IntPtr device, DebugMessageHook debugMessageHook, IntPtr userData);
 #endif
         /// <summary>
@@ -975,7 +977,7 @@ namespace ADLMidi.NET
         /// The `attr` field receives the MIDI channel from which the chip channel is used.
         /// To get the valid MIDI channel you will need to apply the & 0x0F mask to every value.
         /// </summary>
-        [DllImport("ADLMIDI.dll")]
+        [DllImport(LibraryName)]
         public static extern int adl_describeChannels(IntPtr device, string text, string attr, UIntPtr size);
         #endregion
     }
