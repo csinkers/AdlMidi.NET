@@ -30,16 +30,16 @@ The libADLMIDI.so / .dll files incuded in the NuGet package were generated via t
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
-    -DlibADLMIDI_STATIC=OFF \
-    -DlibADLMIDI_SHARED=ON \\
-    -DWITH_EMBEDDED_BANKS=OFF \
-    -DWITH_MUS_SUPPORT=OFF \
-    -DWITH_XMI_SUPPORT=ON \
-    -DUSE_DOSBOX_EMULATOR=OFF \
-    -DUSE_NUKED_EMULATOR=ON \
-    -DUSE_OPAL_EMULATOR=OFF \
-    -DUSE_JAVA_EMULATOR=OFF \
-    ..
+      -DlibADLMIDI_STATIC=OFF    \
+      -DlibADLMIDI_SHARED=ON     \
+      -DWITH_EMBEDDED_BANKS=OFF  \
+      -DWITH_MUS_SUPPORT=OFF     \
+      -DWITH_XMI_SUPPORT=ON      \
+      -DUSE_DOSBOX_EMULATOR=OFF  \
+      -DUSE_NUKED_EMULATOR=ON    \
+      -DUSE_OPAL_EMULATOR=OFF    \
+      -DUSE_JAVA_EMULATOR=OFF    \
+      ..
 make
 [ -d ../../ADLMidi.NET/runtimes/linux-x64/native ] || mkdir -p ../../ADLMidi.NET/runtimes/linux-x64/native
 cp -L libADLMIDI.so ../../ADLMidi.NET/runtimes/linux-x64/native
