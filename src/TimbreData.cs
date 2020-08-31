@@ -1,4 +1,5 @@
-﻿using SerdesNet;
+﻿using System;
+using SerdesNet;
 
 namespace ADLMidi.NET
 {
@@ -19,6 +20,7 @@ namespace ADLMidi.NET
 
         public static TimbreData Serdes(int i, TimbreData data, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             data ??= new TimbreData();
             data.Length             = s.UInt16(nameof(Length), data.Length);
             data.Transpose          = s.UInt8(nameof(Transpose), data.Transpose);

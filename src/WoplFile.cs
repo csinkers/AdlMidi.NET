@@ -12,6 +12,7 @@ namespace ADLMidi.NET
 
         public static WoplFile Serdes(WoplFile w, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             w ??= new WoplFile();
 
             ushort melodicBanks = (ushort)w.Melodic.Count;

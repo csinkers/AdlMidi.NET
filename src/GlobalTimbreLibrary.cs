@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SerdesNet;
 
 namespace ADLMidi.NET
@@ -13,6 +14,7 @@ namespace ADLMidi.NET
 
         public static TimbreHeader Serdes(TimbreHeader header, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             header ??= new TimbreHeader();
             header.MidiPatchNumber = s.UInt8(nameof(MidiPatchNumber), header.MidiPatchNumber);
             header.MidiBankNumber = s.UInt8(nameof(MidiBankNumber), header.MidiBankNumber);
@@ -33,6 +35,7 @@ namespace ADLMidi.NET
         public IList<TimbreData> Data { get; } = new List<TimbreData>();
         public static GlobalTimbreLibrary Serdes(GlobalTimbreLibrary library, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             library ??= new GlobalTimbreLibrary();
             var start = s.Offset;
 

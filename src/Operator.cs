@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using SerdesNet;
 
 namespace ADLMidi.NET
@@ -31,6 +32,7 @@ namespace ADLMidi.NET
 
         public static Operator Serdes(int i, Operator o, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             o.Flags = s.EnumU8(nameof(Flags), o.Flags);
             o.Z_KeyScaleLevel = s.UInt8(nameof(Z_KeyScaleLevel), o.Z_KeyScaleLevel);
             o.Z_AttackDecay = s.UInt8(nameof(Z_AttackDecay), o.Z_AttackDecay);

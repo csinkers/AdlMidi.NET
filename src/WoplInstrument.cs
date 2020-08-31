@@ -1,4 +1,5 @@
-﻿using SerdesNet;
+﻿using System;
+using SerdesNet;
 
 namespace ADLMidi.NET
 {
@@ -9,6 +10,7 @@ namespace ADLMidi.NET
 
         static Instrument SerdesI(int i, Instrument w, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             w.NoteOffset1         = s.Int16  (nameof(Instrument.NoteOffset1),         w.NoteOffset1);
             w.NoteOffset2         = s.Int16  (nameof(Instrument.NoteOffset2),         w.NoteOffset2);
             w.MidiVelocityOffset  = s.Int8   (nameof(Instrument.MidiVelocityOffset),  w.MidiVelocityOffset);
@@ -34,6 +36,7 @@ namespace ADLMidi.NET
             => $"F:{FbConn1C0} {Operator0.Attack}:{Operator0.Decay} {Operator0.Sustain}:{Operator0.Release} {Operator0.Waveform} {Operator0.Flags} {Operator0.Level} {Operator1.Attack}:{Operator1.Decay} {Operator1.Sustain}:{Operator1.Release} {Operator1.Waveform} {Operator1.Flags} {Operator1.Level}";
         public static WoplInstrument Serdes(int i, WoplInstrument w, ISerializer s)
         {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             w ??= new WoplInstrument();
             w.Name = s.FixedLengthString(nameof(Name), w.Name, 32);
             w._data = s.Meta(nameof(_data), w._data, SerdesI);
