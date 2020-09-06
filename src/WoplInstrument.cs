@@ -19,10 +19,10 @@ namespace ADLMidi.NET
             w.Flags               = s.UInt8  (nameof(Instrument.Flags),               w.Flags);
             w.FbConn1C0           = s.EnumU8 (nameof(Instrument.FbConn1C0),          w.FbConn1C0);
             w.FbConn2C0           = s.EnumU8 (nameof(Instrument.FbConn2C0),          w.FbConn2C0);
-            w.Operator0           = s.Meta  (nameof(Instrument.Operator0), w.Operator0, Operator.Serdes);
-            w.Operator1           = s.Meta  (nameof(Instrument.Operator1), w.Operator1, Operator.Serdes);
-            w.Operator2           = s.Meta  (nameof(Instrument.Operator2), w.Operator2, Operator.Serdes);
-            w.Operator3           = s.Meta  (nameof(Instrument.Operator3), w.Operator3, Operator.Serdes);
+            w.Operator0           = s.Object  (nameof(Instrument.Operator0), w.Operator0, Operator.Serdes);
+            w.Operator1           = s.Object  (nameof(Instrument.Operator1), w.Operator1, Operator.Serdes);
+            w.Operator2           = s.Object  (nameof(Instrument.Operator2), w.Operator2, Operator.Serdes);
+            w.Operator3           = s.Object  (nameof(Instrument.Operator3), w.Operator3, Operator.Serdes);
             if (s.PeekVersion() >= 3)
             {
                 w.DelayOnMs = s.UInt16(nameof(Instrument.DelayOnMs), w.DelayOnMs);
@@ -39,7 +39,7 @@ namespace ADLMidi.NET
             if (s == null) throw new ArgumentNullException(nameof(s));
             w ??= new WoplInstrument();
             w.Name = s.FixedLengthString(nameof(Name), w.Name, 32);
-            w._data = s.Meta(nameof(_data), w._data, SerdesI);
+            w._data = s.Object(nameof(_data), w._data, SerdesI);
             return w;
         }
 

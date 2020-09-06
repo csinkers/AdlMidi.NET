@@ -24,9 +24,9 @@ namespace ADLMidi.NET
             data ??= new TimbreData();
             data.Length             = s.UInt16(nameof(Length), data.Length);
             data.Transpose          = s.UInt8(nameof(Transpose), data.Transpose);
-            data.Modulation         = s.Meta(nameof(data.Modulation), data.Modulation, Operator.Serdes);
+            data.Modulation         = s.Object(nameof(data.Modulation), data.Modulation, Operator.Serdes);
             data.FeedbackConnection = s.EnumU8(nameof(FeedbackConnection), data.FeedbackConnection);
-            data.Carrier            = s.Meta(nameof(data.Carrier), data.Carrier, Operator.Serdes);
+            data.Carrier            = s.Object(nameof(data.Carrier), data.Carrier, Operator.Serdes);
             return data;
         }
     }
