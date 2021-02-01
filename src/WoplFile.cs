@@ -23,7 +23,6 @@ namespace ADLMidi.NET
                 throw new InvalidOperationException("Magic string missing (invalid WOPL file)");
 
             w.Version = s.UInt16(nameof(Version), w.Version);
-            s.PushVersion(w.Version);
             melodicBanks = s.UInt16BE(nameof(melodicBanks), melodicBanks);
             percussionBanks = s.UInt16BE(nameof(percussionBanks), percussionBanks);
             w.GlobalFlags = s.EnumU8(nameof(GlobalFlags), w.GlobalFlags);
@@ -49,12 +48,13 @@ namespace ADLMidi.NET
 
             // Load instruments (128 per bank)
             foreach (var bank in w.Melodic)
-                s.List(nameof(w.Melodic), bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
+                s.List(nameof(w.Melodic), bank.Instruments, bank.Instruments.Length,
+                    (i2, w2, s2) => WoplInstrument.Serdes(i2, w2, s2, w.Version));
 
             foreach (var bank in w.Percussion)
-                s.List(nameof(w.Percussion), bank.Instruments, bank.Instruments.Length, WoplInstrument.Serdes);
+                s.List(nameof(w.Percussion), bank.Instruments, bank.Instruments.Length,
+                    (i2, w2, s2) => WoplInstrument.Serdes(i2, w2, s2, w.Version));
 
-            s.PopVersion();
             return w;
         }
 

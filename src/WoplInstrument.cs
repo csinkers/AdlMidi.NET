@@ -8,7 +8,7 @@ namespace ADLMidi.NET
         public string Name { get; set; }
         Instrument _data;
 
-        static Instrument SerdesI(int i, Instrument w, ISerializer s)
+        static Instrument SerdesI(int i, Instrument w, ISerializer s, int version)
         {
             if (s == null) throw new ArgumentNullException(nameof(s));
             w.NoteOffset1         = s.Int16  (nameof(Instrument.NoteOffset1),         w.NoteOffset1);
@@ -23,7 +23,7 @@ namespace ADLMidi.NET
             w.Operator1           = s.Object  (nameof(Instrument.Operator1), w.Operator1, Operator.Serdes);
             w.Operator2           = s.Object  (nameof(Instrument.Operator2), w.Operator2, Operator.Serdes);
             w.Operator3           = s.Object  (nameof(Instrument.Operator3), w.Operator3, Operator.Serdes);
-            if (s.PeekVersion() >= 3)
+            if (version >= 3)
             {
                 w.DelayOnMs = s.UInt16(nameof(Instrument.DelayOnMs), w.DelayOnMs);
                 w.DelayOffMs = s.UInt16(nameof(Instrument.DelayOffMs), w.DelayOffMs);
@@ -34,12 +34,12 @@ namespace ADLMidi.NET
 
         public override string ToString()
             => $"F:{FbConn1C0} {Operator0.Attack}:{Operator0.Decay} {Operator0.Sustain}:{Operator0.Release} {Operator0.Waveform} {Operator0.Flags} {Operator0.Level} {Operator1.Attack}:{Operator1.Decay} {Operator1.Sustain}:{Operator1.Release} {Operator1.Waveform} {Operator1.Flags} {Operator1.Level}";
-        public static WoplInstrument Serdes(int i, WoplInstrument w, ISerializer s)
+        public static WoplInstrument Serdes(int i, WoplInstrument w, ISerializer s, int version)
         {
             if (s == null) throw new ArgumentNullException(nameof(s));
             w ??= new WoplInstrument();
             w.Name = s.FixedLengthString(nameof(Name), w.Name, 32);
-            w._data = s.Object(nameof(_data), w._data, SerdesI);
+            w._data = s.Object(nameof(_data), w._data, (i2, w2, s2) => SerdesI(i2, w2, s2, version));
             return w;
         }
 

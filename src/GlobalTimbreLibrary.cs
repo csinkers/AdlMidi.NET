@@ -41,7 +41,7 @@ namespace ADLMidi.NET
 
 
             IList<TimbreHeader> headers = new List<TimbreHeader>();
-            if (s.Mode == SerializerMode.Reading)
+            if (s.IsReading())
             {
                 TimbreHeader header;
                 do
