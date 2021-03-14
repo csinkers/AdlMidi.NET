@@ -14,7 +14,7 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="!Exists('..\..\SerdesNet')">
-    <PackageReference Include="SerdesNet" Version="1.7.1" />
+    <PackageReference Include="SerdesNet" Version="1.7.2" />
   </ItemGroup>
   <ItemGroup Condition="Exists('..\..\SerdesNet')">
     <ProjectReference Include="..\..\SerdesNet\src\SerdesNet.csproj" />
