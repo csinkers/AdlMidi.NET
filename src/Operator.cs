@@ -30,7 +30,7 @@ namespace ADLMidi.NET
             Z_SustainRelease = 240
         };
 
-        public static Operator Serdes(int i, Operator o, ISerializer s)
+        public static Operator Serdes(string _, Operator o, ISerializer s)
         {
             if (s == null) throw new ArgumentNullException(nameof(s));
             o.Flags = s.EnumU8(nameof(Flags), o.Flags);
