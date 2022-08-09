@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using SerdesNet;
 
 namespace ADLMidi.NET
@@ -95,6 +97,15 @@ namespace ADLMidi.NET
                 else
                     Percussion[0].Instruments[i - 128 + 35] = x;
             }
+        }
+
+        public byte[] GetRawWoplBytes(Action<string> assertionFailed)
+        {
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+            using var gbw = new GenericBinaryWriter(bw, Encoding.ASCII.GetBytes, assertionFailed);
+            Serdes(this, gbw);
+            return ms.ToArray();
         }
     }
 }
