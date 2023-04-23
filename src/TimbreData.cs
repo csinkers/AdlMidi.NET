@@ -18,7 +18,7 @@ namespace ADLMidi.NET
         public Operator Modulation { get; set; }
         public Operator Carrier { get; set; }
 
-        public static TimbreData Serdes(int i, TimbreData data, ISerializer s)
+        public static TimbreData Serdes(int _, TimbreData data, ISerializer s)
         {
             if (s == null) throw new ArgumentNullException(nameof(s));
             data ??= new TimbreData();

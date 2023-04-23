@@ -11,7 +11,7 @@ namespace TestApp
     {
         const int SampleRate = 44100;
         const string newWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
-        static readonly StringBuilder NoteWriter = new StringBuilder();
+        static readonly StringBuilder NoteWriter = new();
         static double Time = 0;
         
         static void Main()
@@ -27,7 +27,7 @@ namespace TestApp
             for (int i = 0; i <= 45; i++)
             {
                 Console.WriteLine($"Dumping {i}");
-                //ExportAlbionSong(i, bankData);
+                ExportAlbionSong(i, bankData);
                 ExportSongEvents(i, bankData);
             }
 
@@ -100,7 +100,7 @@ namespace TestApp
 
         static WoplFile OplToWopl(GlobalTimbreLibrary oplFile)
         {
-            WoplFile wopl = new WoplFile
+            var wopl = new WoplFile
             {
                 Version = 3,
                 GlobalFlags = GlobalBankFlags.DeepTremolo | GlobalBankFlags.DeepVibrato,
@@ -186,13 +186,14 @@ namespace TestApp
                 _stream.Dispose();
             }
         }
-
+/*
         static WoplFile ReadWopl(string filename)
         {
             using var stream2 = File.OpenRead(filename);
             using var br = new BinaryReader(stream2);
             return WoplFile.Serdes(null, new GenericBinaryReader(br, br.BaseStream.Length, Encoding.ASCII.GetString, Console.WriteLine));
         }
+*/
 
         static void WriteWopl(WoplFile wopl, string filename)
         {

@@ -56,7 +56,7 @@ namespace ADLMidi.NET
     {
         const string LibraryName = "libadlmidi";
 
-        public static readonly Version AdlMidiVersion = new Version(1, 4, 1);
+        public static readonly Version AdlMidiVersion = new(1, 4, 1);
 
         /// <summary>
         /// Sets number of emulated chips (from 1 to 100). Emulation of multiple chips extends polyphony limits
@@ -115,9 +115,9 @@ namespace ADLMidi.NET
         [StructLayout(LayoutKind.Sequential)]
         public struct Bank
         {
-            IntPtr Pointer0;
-            IntPtr Pointer1;
-            IntPtr Pointer2;
+            public IntPtr Pointer0;
+            public IntPtr Pointer1;
+            public IntPtr Pointer2;
         }
 
         /// <summary>

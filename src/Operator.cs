@@ -24,7 +24,7 @@ namespace ADLMidi.NET
         public int Level => (63 - Z_KeyScaleLevel) & 0x3f; // 0..63
         public int KeyScale => (Z_KeyScaleLevel & 0xc0) >> 6; // 0..3
         public int FreqMultiple => (int)Flags & 0xf; // 0..15
-        public static Operator Blank => new Operator
+        public static Operator Blank => new()
         {
             Z_KeyScaleLevel = 63,
             Z_SustainRelease = 240

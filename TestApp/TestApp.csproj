@@ -10,4 +10,10 @@
     <ProjectReference Include="..\src\ADLMidi.NET.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition="!Exists('..\..\SerdesNet')">
+    <PackageReference Include="SerdesNet" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('..\..\SerdesNet')">
+    <ProjectReference Include="..\..\SerdesNet\src\SerdesNet.csproj" />
+  </ItemGroup>
 </Project>

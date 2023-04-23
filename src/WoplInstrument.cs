@@ -34,7 +34,7 @@ namespace ADLMidi.NET
 
         public override string ToString()
             => $"F:{FbConn1C0} {Operator0.Attack}:{Operator0.Decay} {Operator0.Sustain}:{Operator0.Release} {Operator0.Waveform} {Operator0.Flags} {Operator0.Level} {Operator1.Attack}:{Operator1.Decay} {Operator1.Sustain}:{Operator1.Release} {Operator1.Waveform} {Operator1.Flags} {Operator1.Level}";
-        public static WoplInstrument Serdes(int i, WoplInstrument w, ISerializer s, int version)
+        public static WoplInstrument Serdes(int _, WoplInstrument w, ISerializer s, int version)
         {
             if (s == null) throw new ArgumentNullException(nameof(s));
             w ??= new WoplInstrument();
