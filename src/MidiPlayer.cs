@@ -132,7 +132,7 @@ namespace ADLMidi.NET
             fixed(short* p = buffer)
             {
                 return Check(AdlMidiImports.adl_play(_device, buffer.Length, p));
-            };
+            }
         }
 
         public int PlayFormat(int sampleCount, IntPtr left, IntPtr right, ref AudioFormat format) => Check(AdlMidiImports.adl_playFormat(_device, sampleCount, left, right, ref format));
