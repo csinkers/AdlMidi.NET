@@ -5,9 +5,11 @@ namespace ADLMidi.NET
     [Flags]
     public enum Modulation : byte
     {
+        // ReSharper disable InconsistentNaming
         // Two operator:
         FM = 0,
         AM = 1,
+        // ReSharper restore InconsistentNaming
 
         Feedback1 = 2,
         Feedback2 = 4,

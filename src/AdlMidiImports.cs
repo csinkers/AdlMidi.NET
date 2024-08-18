@@ -119,14 +119,6 @@ namespace ADLMidi.NET
             public IntPtr Pointer2;
         }
 
-        /// <summary>
-        /// Version of the instrument data format
-        /// </summary>
-        public enum InstrumentVersion
-        {
-            ADLMIDI_InstrumentVersion = 0
-        }
-
         #region Setup
 
         /// <summary>
@@ -910,7 +902,7 @@ namespace ADLMidi.NET
         /// <summary>
         /// Perform a system exclusive message
         /// <param name="device">Instance of the library</param>
-        /// <param name="msg">Raw SysEx message buffer (must begin with 0xF0 and end with 0xF7)</param>
+        /// <param name="message">Raw SysEx message buffer (must begin with 0xF0 and end with 0xF7)</param>
         /// <param name="size">Size of given SysEx message buffer</param>
         /// <returns>1 when SysEx message was successfully processed, 0 when SysEx message was rejected for any reason</returns>
         /// </summary>
