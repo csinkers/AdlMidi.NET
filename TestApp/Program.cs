@@ -5,187 +5,187 @@ using System.Text;
 using ADLMidi.NET;
 using SerdesNet;
 
-namespace TestApp
+namespace TestApp;
+
+class Program
 {
-    class Program
-    {
-        const int SampleRate = 44100;
-        const string newWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
-        static readonly StringBuilder NoteWriter = new();
-        static double Time = 0;
+    const int SampleRate = 44100;
+    const string NewWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
+    static readonly StringBuilder NoteWriter = new();
+    static double Time = 0;
         
-        static void Main()
+    static void Main()
+    {
+        // WoplFile realWopl = ReadWopl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.wopl");
+        // WriteWopl(realWopl, @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_ROUNDTRIP.wopl");
+
+        GlobalTimbreLibrary oplFile = ReadOpl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.OPL");
+        WoplFile wopl = OplToWopl(oplFile);
+        WriteWopl(wopl, NewWoplPath);
+
+        byte[] bankData = File.ReadAllBytes(NewWoplPath);
+        for (int i = 0; i <= 45; i++)
         {
-            // WoplFile realWopl = ReadWopl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.wopl");
-            // WriteWopl(realWopl, @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_ROUNDTRIP.wopl");
-
-            GlobalTimbreLibrary oplFile = ReadOpl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.OPL");
-            WoplFile wopl = OplToWopl(oplFile);
-            WriteWopl(wopl, newWoplPath);
-
-            byte[] bankData = File.ReadAllBytes(newWoplPath);
-            for (int i = 0; i <= 45; i++)
-            {
-                Console.WriteLine($"Dumping {i}");
-                ExportAlbionSong(i, bankData);
-                ExportSongEvents(i, bankData);
-            }
-
-            File.WriteAllText(@"C:\Depot\bb\ualbion\re\SongsPlayed.txt", NoteWriter.ToString());
+            Console.WriteLine($"Dumping {i}");
+            ExportAlbionSong(i, bankData);
+            ExportSongEvents(i, bankData);
         }
 
-        static void ExportAlbionSong(int songId, byte[] bankData)
+        File.WriteAllText(@"C:\Depot\bb\ualbion\re\SongsPlayed.txt", NoteWriter.ToString());
+    }
+
+    static void ExportAlbionSong(int songId, byte[] bankData)
+    {
+        string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
+        if (!File.Exists(path))
+            return;
+
+        using var outputFile = new WavFile(
+            $@"C:\Depot\bb\ualbion\re\Songs{songId/100}_{songId%100:D2}.wav",
+            SampleRate, 2, 2);
+
+        using var player = AdlMidi.Init();
+
+        NoteWriter.AppendLine($"Song {songId}");
+        player.SetNoteHook(NoteHook, IntPtr.Zero);
+        player.OpenBankData(bankData);
+        player.OpenFile(path);
+        player.SetLoopEnabled(false);
+        short[] bufferArray = new short[4096];
+        long totalSamples = 0;
+        for(;;)
         {
-            string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
-            if (!File.Exists(path))
-                return;
+            Time = (double)totalSamples / (2 * SampleRate);
+            int samplesWritten = player.Play(bufferArray);
+            totalSamples += samplesWritten;
 
-            using var outputFile = new WavFile(
-                $@"C:\Depot\bb\ualbion\re\Songs{songId/100}_{songId%100:D2}.wav",
-                SampleRate, 2, 2);
+            if (samplesWritten <= 0)
+                break;
 
-            using var player = AdlMidi.Init();
+            var byteSpan = MemoryMarshal.Cast<short, byte>(new ReadOnlySpan<short>(bufferArray, 0, samplesWritten));
+            outputFile.Write(byteSpan);
+        }
+        NoteWriter.AppendLine();
+    }
 
-            NoteWriter.AppendLine($"Song {songId}");
-            player.SetNoteHook(NoteHook, IntPtr.Zero);
-            player.OpenBankData(bankData);
-            player.OpenFile(path);
-            player.SetLoopEnabled(false);
-            short[] bufferArray = new short[4096];
-            long totalSamples = 0;
-            for(;;)
-            {
-                Time = (double)totalSamples / (2 * SampleRate);
-                int samplesWritten = player.Play(bufferArray);
-                totalSamples += samplesWritten;
+    public static void ExportSongEvents(int songId, byte[] bankData)
+    {
+        string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
+        if (!File.Exists(path))
+            return;
 
-                if (samplesWritten <= 0)
-                    break;
+        using var player = AdlMidi.Init();
 
-                var byteSpan = MemoryMarshal.Cast<short, byte>(new ReadOnlySpan<short>(bufferArray, 0, samplesWritten));
-                outputFile.Write(byteSpan);
-            }
-            NoteWriter.AppendLine();
+        NoteWriter.AppendLine($"Song {songId}");
+        player.OpenBankData(bankData);
+        player.SetNoteHook(NoteHook, IntPtr.Zero);
+        player.OpenFile(path);
+        player.SetLoopEnabled(false);
+        double nextTime = 0;
+        Time = 0;
+        const double minTick = 1.0;
+        while (player.AtEnd() == 0)
+        {
+            Time += nextTime;
+            nextTime = player.TickEvents(nextTime, minTick);
         }
 
-        public static void ExportSongEvents(int songId, byte[] bankData)
+        NoteWriter.AppendLine();
+    }
+
+    static void NoteHook(IntPtr userdata, int adlchannel, int note, int ins, int pressure, double bend)
+    {
+        NoteWriter.AppendLine($"    {Time}: Chan{adlchannel} Note{note} Instrument{ins} Pressure{pressure} Bend{bend}");
+    }
+
+    static WoplFile OplToWopl(GlobalTimbreLibrary oplFile)
+    {
+        var wopl = new WoplFile
         {
-            string path = $@"C:\Depot\bb\ualbion\Data\Exported\SONGS{songId/100}.XLD\{songId%100:D2}.xmi";
-            if (!File.Exists(path))
-                return;
+            Version = 3,
+            GlobalFlags = GlobalBankFlags.DeepTremolo | GlobalBankFlags.DeepVibrato,
+            VolumeModel = VolumeModel.Auto
+        };
 
-            using var player = AdlMidi.Init();
+        wopl.Melodic.Add(new WoplBank { Id = 0, Name = "" });
+        wopl.Percussion.Add(new WoplBank { Id = 0, Name = "" });
 
-            NoteWriter.AppendLine($"Song {songId}");
-            player.OpenBankData(bankData);
-            player.SetNoteHook(NoteHook, IntPtr.Zero);
-            player.OpenFile(path);
-            player.SetLoopEnabled(false);
-            double nextTime = 0;
-            Time = 0;
-            const double minTick = 1.0;
-            while (player.AtEnd() == 0)
-            {
-                Time += nextTime;
-                nextTime = player.TickEvents(nextTime, minTick);
-            }
+        for(int i = 0; i < oplFile.Data.Count; i++)
+        {
+            var timbre = oplFile.Data[i];
+            WoplInstrument x =
+                i < 128
+                    ? wopl.Melodic[0].Instruments[i] ?? new WoplInstrument()
+                    : wopl.Percussion[0].Instruments[i - 128 + 35] ?? new WoplInstrument();
 
-            NoteWriter.AppendLine();
+            x.Name = "";
+            x.NoteOffset1 = timbre.MidiPatchNumber;
+            x.NoteOffset2 = timbre.MidiBankNumber;
+            x.InstrumentMode = InstrumentMode.TwoOperator;
+            x.FbConn1C0 = timbre.FeedbackConnection;
+            x.Operator0 = timbre.Carrier;
+            x.Operator1 = timbre.Modulation;
+            x.Operator2 = Operator.Blank;
+            x.Operator3 = Operator.Blank;
+
+            if (i < 128)
+                wopl.Melodic[0].Instruments[i] = x;
+            else
+                wopl.Percussion[0].Instruments[i - 128 + 35] = x;
         }
 
-        static void NoteHook(IntPtr userdata, int adlchannel, int note, int ins, int pressure, double bend)
+        return wopl;
+    }
+
+    public sealed class WavFile : IDisposable
+    {
+        readonly FileStream _stream;
+        readonly BinaryWriter _bw;
+        readonly long _riffSizeOffset;
+        readonly long _dataSizeOffset;
+        uint _dataSize;
+
+        public WavFile(string filename, uint sampleRate, ushort numChannels, ushort bytesPerSample)
         {
-            NoteWriter.AppendLine($"    {Time}: Chan{adlchannel} Note{note} Instrument{ins} Pressure{pressure} Bend{bend}");
+            _stream = File.Open(filename, FileMode.Create);
+            _bw = new BinaryWriter(_stream);
+            _bw.Write(Encoding.ASCII.GetBytes("RIFF")); // Container format chunk
+            _riffSizeOffset = _stream.Position;
+            _bw.Write(0); // Dummy write to start with, will be overwritten at the end.
+
+            _bw.Write(Encoding.ASCII.GetBytes("WAVEfmt ")); // Subchunk1 (format metadata)
+            _bw.Write(16);
+            _bw.Write((ushort)1); // Format = Linear Quantisation
+            _bw.Write(numChannels); // NumChannels
+            _bw.Write(sampleRate); // SampleRate
+            _bw.Write(sampleRate * numChannels * bytesPerSample); // ByteRate
+            _bw.Write((ushort)(numChannels * bytesPerSample)); // BlockAlign
+            _bw.Write((ushort)(bytesPerSample * 8)); // BitsPerSample
+
+            _bw.Write(Encoding.ASCII.GetBytes("data")); // Subchunk2 (raw sample data)
+            _dataSizeOffset = _stream.Position;
+            _bw.Write(0); // Dummy write, will be overwritten at the end
         }
 
-        static WoplFile OplToWopl(GlobalTimbreLibrary oplFile)
+        public void Write(ReadOnlySpan<byte> buffer)
         {
-            var wopl = new WoplFile
-            {
-                Version = 3,
-                GlobalFlags = GlobalBankFlags.DeepTremolo | GlobalBankFlags.DeepVibrato,
-                VolumeModel = VolumeModel.Auto
-            };
-
-            wopl.Melodic.Add(new WoplBank { Id = 0, Name = "" });
-            wopl.Percussion.Add(new WoplBank { Id = 0, Name = "" });
-
-            for(int i = 0; i < oplFile.Data.Count; i++)
-            {
-                var timbre = oplFile.Data[i];
-                WoplInstrument x =
-                    i < 128
-                        ? wopl.Melodic[0].Instruments[i] ?? new WoplInstrument()
-                        : wopl.Percussion[0].Instruments[i - 128 + 35] ?? new WoplInstrument();
-
-                x.Name = "";
-                x.NoteOffset1 = timbre.MidiPatchNumber;
-                x.NoteOffset2 = timbre.MidiBankNumber;
-                x.InstrumentMode = InstrumentMode.TwoOperator;
-                x.FbConn1C0 = timbre.FeedbackConnection;
-                x.Operator0 = timbre.Carrier;
-                x.Operator1 = timbre.Modulation;
-                x.Operator2 = Operator.Blank;
-                x.Operator3 = Operator.Blank;
-
-                if (i < 128)
-                    wopl.Melodic[0].Instruments[i] = x;
-                else
-                    wopl.Percussion[0].Instruments[i - 128 + 35] = x;
-            }
-
-            return wopl;
+            _bw.Write(buffer);
+            _dataSize += (uint)buffer.Length;
         }
 
-        public sealed class WavFile : IDisposable
+        public void Dispose()
         {
-            readonly FileStream _stream;
-            readonly BinaryWriter _bw;
-            readonly long _riffSizeOffset;
-            readonly long _dataSizeOffset;
-            uint _dataSize;
+            var totalLength = _stream.Position; // Write actual length to container format chunk
+            _stream.Position = _riffSizeOffset;
+            _bw.Write((uint)(totalLength - 8));
 
-            public WavFile(string filename, uint sampleRate, ushort numChannels, ushort bytesPerSample)
-            {
-                _stream = File.Open(filename, FileMode.Create);
-                _bw = new BinaryWriter(_stream);
-                _bw.Write(Encoding.ASCII.GetBytes("RIFF")); // Container format chunk
-                _riffSizeOffset = _stream.Position;
-                _bw.Write(0); // Dummy write to start with, will be overwritten at the end.
+            _stream.Position = _dataSizeOffset;
+            _bw.Write(_dataSize);
 
-                _bw.Write(Encoding.ASCII.GetBytes("WAVEfmt ")); // Subchunk1 (format metadata)
-                _bw.Write(16);
-                _bw.Write((ushort)1); // Format = Linear Quantisation
-                _bw.Write(numChannels); // NumChannels
-                _bw.Write(sampleRate); // SampleRate
-                _bw.Write(sampleRate * numChannels * bytesPerSample); // ByteRate
-                _bw.Write((ushort)(numChannels * bytesPerSample)); // BlockAlign
-                _bw.Write((ushort)(bytesPerSample * 8)); // BitsPerSample
-
-                _bw.Write(Encoding.ASCII.GetBytes("data")); // Subchunk2 (raw sample data)
-                _dataSizeOffset = _stream.Position;
-                _bw.Write(0); // Dummy write, will be overwritten at the end
-            }
-
-            public void Write(ReadOnlySpan<byte> buffer)
-            {
-                _bw.Write(buffer);
-                _dataSize += (uint)buffer.Length;
-            }
-
-            public void Dispose()
-            {
-                var totalLength = _stream.Position; // Write actual length to container format chunk
-                _stream.Position = _riffSizeOffset;
-                _bw.Write((uint)(totalLength - 8));
-
-                _stream.Position = _dataSizeOffset;
-                _bw.Write(_dataSize);
-
-                _bw.Dispose();
-                _stream.Dispose();
-            }
+            _bw.Dispose();
+            _stream.Dispose();
         }
+    }
 /*
         static WoplFile ReadWopl(string filename)
         {
@@ -195,21 +195,20 @@ namespace TestApp
         }
 */
 
-        static void WriteWopl(WoplFile wopl, string filename)
-        {
-            using var ms = new MemoryStream();
-            using var bw = new BinaryWriter(ms);
-            WoplFile.Serdes(wopl, new GenericBinaryWriter(bw, Encoding.ASCII.GetBytes, Console.WriteLine));
-            byte[] bytes = ms.ToArray();
-            File.WriteAllBytes(filename, bytes);
-        }
+    static void WriteWopl(WoplFile wopl, string filename)
+    {
+        using var ms = new MemoryStream();
+        using var bw = new BinaryWriter(ms);
+        WoplFile.Serdes(wopl, new WriterSerdes(bw, Encoding.ASCII.GetBytes, Console.WriteLine));
+        byte[] bytes = ms.ToArray();
+        File.WriteAllBytes(filename, bytes);
+    }
 
-        static GlobalTimbreLibrary ReadOpl(string filename)
-        {
-            using var stream = File.OpenRead(filename);
-            using var br = new BinaryReader(stream);
-            return GlobalTimbreLibrary.Serdes(null,
-                new GenericBinaryReader(br, br.BaseStream.Length, Encoding.ASCII.GetString, Console.WriteLine));
-        }
+    static GlobalTimbreLibrary ReadOpl(string filename)
+    {
+        using var stream = File.OpenRead(filename);
+        using var br = new BinaryReader(stream);
+        return GlobalTimbreLibrary.Serdes(null,
+            new ReaderSerdes(br, br.BaseStream.Length, Encoding.ASCII.GetString, Console.WriteLine));
     }
 }

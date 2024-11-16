@@ -2,19 +2,26 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
     <Authors>Cam Sinclair</Authors>
     <Description>A .NET wrapper for the libADLMIDI library, a free Software MIDI synthesizer library with OPL3 emulation</Description>
     <Copyright>2020 Cam Sinclair</Copyright>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>ADLMidi.NET</PackageId>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
     <PackageTags>MIDI OPL3 ADLMIDI</PackageTags>
-    <PackageProjectUrl>https://github.com/CSinkers/AdlMidi.NET</PackageProjectUrl>
-    <LangVersion>latest</LangVersion>
-    <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/CSinkers/AdlMidi.NET</RepositoryUrl>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <version>1.0.18</version>
+    <PackageProjectUrl>https://github.com/csinkers/AdlMidi.NET</PackageProjectUrl>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/csinkers/AdlMidi.NET</RepositoryUrl>
+
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EmbedAllSources>true</EmbedAllSources>
+    <DebugType>Embedded</DebugType>
+    <version>1.0.19</version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,10 +29,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="!Exists('..\..\SerdesNet')">
-    <PackageReference Include="SerdesNet" Version="2.0.0" />
+    <PackageReference Include="SerdesNet" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup Condition="Exists('..\..\SerdesNet')">
-    <ProjectReference Include="..\..\SerdesNet\src\SerdesNet.csproj" />
+    <ProjectReference Include="..\..\SerdesNet\src\SerdesNet\SerdesNet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

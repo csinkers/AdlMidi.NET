@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ADLMidi.NET", "src\ADLMidi.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "TestApp\TestApp.csproj", "{C39D3663-C688-489F-A46C-06B4BFF53673}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerdesNet", "..\SerdesNet\src\SerdesNet.csproj", "{DC43FE5A-8DBA-4F72-9AAB-34DE1D512DB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerdesNet", "..\SerdesNet\src\SerdesNet\SerdesNet.csproj", "{DC43FE5A-8DBA-4F72-9AAB-34DE1D512DB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

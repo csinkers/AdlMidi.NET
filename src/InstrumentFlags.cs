@@ -1,10 +1,9 @@
-﻿namespace ADLMidi.NET
+﻿namespace ADLMidi.NET;
+
+public enum InstrumentMode
 {
-    public enum InstrumentMode
-    {
-        TwoOperator = 0,
-        FourOperator = 1,
-        PseudoFourOperator = 2,
-        Blank = 4
-    }
+    TwoOperator = 0,
+    FourOperator = 1,
+    PseudoFourOperator = 2,
+    Blank = 4
 }

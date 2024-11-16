@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace ADLMidi.NET
+namespace ADLMidi.NET;
+
+[Flags]
+public enum GlobalBankFlags : byte
 {
-    [Flags]
-    public enum GlobalBankFlags : byte
-    {
-        DeepTremolo = 1,
-        DeepVibrato = 2,
-    }
+    DeepTremolo = 1,
+    DeepVibrato = 2,
 }
