@@ -5,15 +5,26 @@
 /// </summary>
 public enum SampleType
 {
-    S16 = 0, // signed PCM 16-bit
-    S8,      // signed PCM 8-bit
-    F32,     // float 32-bit
-    F64,     // float 64-bit
-    S24,     // signed PCM 24-bit
-    S32,     // signed PCM 32-bit
-    U8,      // unsigned PCM 8-bit
-    U16,     // unsigned PCM 16-bit
-    U24,     // unsigned PCM 24-bit
-    U32,     // unsigned PCM 32-bit
-    Count    // Count of available sample format types
+    /// <summary>Signed PCM 16-bit</summary>
+    S16 = 0,
+    /// <summary>Signed PCM 8-bit</summary>
+    S8,
+    /// <summary>Float 32-bit</summary>
+    F32,
+    /// <summary>Float 64-bit</summary>
+    F64,
+    /// <summary>Signed PCM 24-bit</summary>
+    S24,
+    /// <summary>Signed PCM 32-bit</summary>
+    S32,
+    /// <summary>Unsigned PCM 8-bit</summary>
+    U8,
+    /// <summary>Unsigned PCM 16-bit</summary>
+    U16,
+    /// <summary>Unsigned PCM 24-bit</summary>
+    U24,
+    /// <summary>Unsigned PCM 32-bit</summary>
+    U32,
+    /// <summary>Count of available sample format types</summary>
+    Count
 }

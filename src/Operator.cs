@@ -10,12 +10,29 @@ namespace ADLMidi.NET;
 [StructLayout(LayoutKind.Sequential)]
 public struct Operator
 {
-    byte Z_KeyScaleLevel;  // Key Scale Level / Total level register data
-    byte Z_AttackDecay;    // Attack / Decay
-    byte Z_SustainRelease; // Sustain and Release register data
+    /// <summary>
+    /// Key Scale Level / Total level register data
+    /// </summary>
+    byte Z_KeyScaleLevel;
 
-    public OperatorFlags Flags; // AM/Vib/Env/Ksr/FMult characteristics
-    public Waveform Waveform;   // Wave form
+    /// <summary>
+    /// Attack / Decay
+    /// </summary>
+    byte Z_AttackDecay;
+
+    /// <summary>
+    /// Sustain and Release register data
+    /// </summary>
+    byte Z_SustainRelease;
+    /// <summary>
+    /// AM/Vib/Env/Ksr/FMult characteristics
+    /// </summary>
+    public OperatorFlags Flags;
+
+    /// <summary>
+    /// Wave form
+    /// </summary>
+    public Waveform Waveform;
 
     public int Attack => (Z_AttackDecay & 0xf0) >> 4; // 0..15
     public int Decay => Z_AttackDecay & 0x0f; // 0..15

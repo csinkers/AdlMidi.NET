@@ -5,10 +5,33 @@
 /// </summary>
 public enum Emulator
 {
-    Nuked = 0, // Nuked OPL3 v. 1.8
-    Nuked174,  // Nuked OPL3 v. 1.7.4
-    DosBox,    // DosBox
-    Opal,      // Opal
-    Java,      // Java
-    End        // Count instrument on the level
+    /// <summary>
+    /// Nuked OPL3 v. 1.8
+    /// </summary>
+    Nuked = 0,
+
+    /// <summary>
+    /// Nuked OPL3 v. 1.7.4
+    /// </summary>
+    Nuked174,
+
+    /// <summary>
+    /// DosBox
+    /// </summary>
+    DosBox,
+
+    /// <summary>
+    /// Opal
+    /// </summary>
+    Opal,
+
+    /// <summary>
+    /// Java
+    /// </summary>
+    Java,
+
+    /// <summary>
+    /// Count instrument on the level
+    /// </summary>
+    End
 }

@@ -1,12 +1,29 @@
 ﻿namespace ADLMidi.NET;
 
+/// <summary>
+/// WOPL instrument bank
+/// </summary>
 public class WoplBank
 {
+    /// <summary>
+    /// Maximum number of instruments in the bank
+    /// </summary>
     public const int BankSize = 128;
+
+    /// <summary>
+    /// Maximum length of the bank name
+    /// </summary>
     public const int MaxNameLength = 32;
     string _name;
 
+    /// <summary>
+    /// The bank ID
+    /// </summary>
     public ushort Id { get; set; }
+
+    /// <summary>
+    /// The bank name
+    /// </summary>
     public string Name
     {
         get => _name;
@@ -18,5 +35,9 @@ public class WoplBank
         }
 
     }
+
+    /// <summary>
+    /// The instruments in the bank
+    /// </summary>
     public WoplInstrument[] Instruments { get; } = new WoplInstrument[BankSize];
 }

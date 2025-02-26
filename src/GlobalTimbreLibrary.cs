@@ -4,35 +4,22 @@ using SerdesNet;
 
 namespace ADLMidi.NET;
 
-class TimbreHeader
+/// <summary>
+/// Load and save .OPL / .AD files from AIL / Miles Sound System
+/// </summary>
+public class GlobalTimbreLibrary
 {
-    public const int Size = 6;
-    public byte MidiPatchNumber { get; set; }
-    public byte MidiBankNumber { get; set; }
-    public uint InstrumentDataOffset { get; set; }
-    public bool IsSentinel => MidiPatchNumber == 0xff && MidiBankNumber == 0xff;
-
-    public static TimbreHeader Serdes(TimbreHeader header, ISerdes s)
-    {
-        if (s == null) throw new ArgumentNullException(nameof(s));
-        header ??= new TimbreHeader();
-        header.MidiPatchNumber = s.UInt8(nameof(MidiPatchNumber), header.MidiPatchNumber);
-        header.MidiBankNumber = s.UInt8(nameof(MidiBankNumber), header.MidiBankNumber);
-
-        if (header.IsSentinel)
-        {
-            header.InstrumentDataOffset = 0;
-            return header;
-        }
-
-        header.InstrumentDataOffset = s.UInt32(nameof(InstrumentDataOffset), header.InstrumentDataOffset);
-        return header;
-    }
-}
-
-public class GlobalTimbreLibrary // Load and save .OPL / .AD files from AIL / Miles Sound System
-{
+    /// <summary>
+    /// The timbre data
+    /// </summary>
     public IList<TimbreData> Data { get; } = new List<TimbreData>();
+
+    /// <summary>
+    /// Serialize or deserialize the global timbre library
+    /// </summary>
+    /// <param name="library">The library to serialize from / deserialize into. If this is null when deserializing, then a new instance will be created and returned.</param>
+    /// <param name="s">The serializer/deserializer</param>
+    /// <returns>The library that was (de)serialized.</returns>
     public static GlobalTimbreLibrary Serdes(GlobalTimbreLibrary library, ISerdes s)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));

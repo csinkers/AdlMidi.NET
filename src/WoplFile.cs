@@ -6,12 +6,26 @@ using SerdesNet;
 
 namespace ADLMidi.NET;
 
+/// <summary>
+/// WOPL file
+/// </summary>
 public class WoplFile
 {
     const string Magic = "WOPL3-BANK";
+
+    /// <summary>
+    /// The melodic instrument banks
+    /// </summary>
     public IList<WoplBank> Melodic { get; } = new List<WoplBank>();
+
+    /// <summary>
+    /// The percussion instrument banks
+    /// </summary>
     public IList<WoplBank> Percussion { get; } = new List<WoplBank>();
 
+    /// <summary>
+    /// Serialize or deserialize a WOPL file
+    /// </summary>
     public static WoplFile Serdes(WoplFile w, ISerdes s)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));
@@ -60,11 +74,30 @@ public class WoplFile
         return w;
     }
 
+    /// <summary>
+    /// The WOPL file version
+    /// </summary>
     public ushort Version { get; set; } = 3;
+
+    /// <summary>
+    /// The global flags
+    /// </summary>
     public GlobalBankFlags GlobalFlags { get; set; }
+
+    /// <summary>
+    /// The volume model
+    /// </summary>
     public VolumeModel VolumeModel { get; set; }
 
+    /// <summary>
+    /// Create a new WOPL file
+    /// </summary>
     public WoplFile() { }
+
+    /// <summary>
+    /// Create a new WOPL file from a timbre library
+    /// </summary>
+    /// <param name="timbreLibrary"></param>
     public WoplFile(GlobalTimbreLibrary timbreLibrary)
     {
         Version = 3;
@@ -99,6 +132,11 @@ public class WoplFile
         }
     }
 
+    /// <summary>
+    /// Serializes a WOPL file to a byte array
+    /// </summary>
+    /// <param name="assertionFailed">Method to call if an assertion about the data is violated.</param>
+    /// <returns>The serialized byte array</returns>
     public byte[] GetRawWoplBytes(Action<string> assertionFailed)
     {
         using var ms = new MemoryStream();

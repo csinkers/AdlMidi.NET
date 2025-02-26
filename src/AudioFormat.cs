@@ -8,7 +8,18 @@ namespace ADLMidi.NET;
 [StructLayout(LayoutKind.Sequential)]
 public struct AudioFormat
 {
-    public SampleType Type; // type of sample
-    public uint ContainerSize; // size in bytes of the storage type
-    public uint SampleOffset; // distance in bytes between consecutive samples
+    /// <summary>
+    /// Type of sample
+    /// </summary>
+    public SampleType Type;
+
+    /// <summary>
+    /// Size in bytes of the storage type
+    /// </summary>
+    public uint ContainerSize;
+
+    /// <summary>
+    /// Distance in bytes between consecutive samples
+    /// </summary>
+    public uint SampleOffset;
 }

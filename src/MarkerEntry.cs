@@ -3,12 +3,23 @@
 namespace ADLMidi.NET;
 
 /// <summary>
-/// MIDI Marker structure
+/// Represents a MIDI marker.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
 public struct MarkerEntry
 {
-    public string Label;   // MIDI Marker title
-    public double PosTime; // Absolute time position of the marker in seconds
-    public uint PosTicks;  // Absolute time position of the marker in MIDI ticks
+    /// <summary>
+    /// Gets or sets the title of the MIDI marker.
+    /// </summary>
+    public string Label;
+
+    /// <summary>
+    /// Gets or sets the absolute time position of the marker in seconds.
+    /// </summary>
+    public double PosTime;
+
+    /// <summary>
+    /// Gets or sets the absolute time position of the marker in MIDI ticks.
+    /// </summary>
+    public uint PosTicks;
 }

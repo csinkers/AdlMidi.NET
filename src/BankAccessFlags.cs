@@ -5,6 +5,13 @@
 /// </summary>
 public enum BankAccessFlags
 {
-    Create = 1, // create bank, allocating memory as needed
-    CreateRt = 1 | 2 // create bank, never allocating memory
+    /// <summary>
+    /// Create bank, allocating memory as needed
+    /// </summary>
+    Create = 1,
+
+    /// <summary>
+    /// Create bank, never allocating memory
+    /// </summary>
+    CreateRt = 1 | 2
 }
