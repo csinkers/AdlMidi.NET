@@ -34,19 +34,53 @@ public struct Operator
     /// </summary>
     public Waveform Waveform;
 
+    /// <summary>
+    /// Attack parameter of the operator
+    /// </summary>
     public int Attack => (Z_AttackDecay & 0xf0) >> 4; // 0..15
+
+    /// <summary>
+    /// Decay parameter of the operator
+    /// </summary>
     public int Decay => Z_AttackDecay & 0x0f; // 0..15
+
+    /// <summary>
+    /// Sustain parameter of the operator
+    /// </summary>
     public int Sustain => 0xf - ((Z_SustainRelease & 0xf0) >> 4); // 0..15
+
+    /// <summary>
+    /// Release parameter of the operator
+    /// </summary>
     public int Release => Z_SustainRelease & 0x0f; // 0..15
+
+    /// <summary>
+    /// Level of the operator
+    /// </summary>
     public int Level => (63 - Z_KeyScaleLevel) & 0x3f; // 0..63
+
+    /// <summary>
+    /// Key scale level of the operator
+    /// </summary>
     public int KeyScale => (Z_KeyScaleLevel & 0xc0) >> 6; // 0..3
+
+    /// <summary>
+    /// Frequency multiplier of the operator
+    /// </summary>
     public int FreqMultiple => (int)Flags & 0xf; // 0..15
+
+    /// <summary>
+    /// Returns a blank operator
+    /// </summary>
     public static Operator Blank => new()
     {
         Z_KeyScaleLevel = 63,
         Z_SustainRelease = 240
     };
 
+    /// <summary>
+    /// Serializes or deserializes an Operator object
+    /// </summary>
     public static Operator Serdes(string _, Operator o, ISerdes s)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));

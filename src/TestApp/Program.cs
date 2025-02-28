@@ -13,7 +13,7 @@ class Program
     const string NewWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
     static readonly StringBuilder NoteWriter = new();
     static double Time = 0;
-        
+
     static void Main()
     {
         // WoplFile realWopl = ReadWopl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.wopl");
