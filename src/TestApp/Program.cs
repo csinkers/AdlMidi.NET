@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using ADLMidi.NET;
@@ -7,15 +8,18 @@ using SerdesNet;
 
 namespace TestApp;
 
-class Program
+internal class Program
 {
     const int SampleRate = 44100;
     const string NewWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
     static readonly StringBuilder NoteWriter = new();
-    static double Time = 0;
+    static double _time;
 
     static void Main()
     {
+        SetupDllLoader();
+        using (AdlMidi.Init()) { }
+
         // WoplFile realWopl = ReadWopl(@"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND.wopl");
         // WriteWopl(realWopl, @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_ROUNDTRIP.wopl");
 
@@ -55,7 +59,7 @@ class Program
         long totalSamples = 0;
         for(;;)
         {
-            Time = (double)totalSamples / (2 * SampleRate);
+            _time = (double)totalSamples / (2 * SampleRate);
             int samplesWritten = player.Play(bufferArray);
             totalSamples += samplesWritten;
 
@@ -82,11 +86,11 @@ class Program
         player.OpenFile(path);
         player.SetLoopEnabled(false);
         double nextTime = 0;
-        Time = 0;
+        _time = 0;
         const double minTick = 1.0;
         while (player.AtEnd() == 0)
         {
-            Time += nextTime;
+            _time += nextTime;
             nextTime = player.TickEvents(nextTime, minTick);
         }
 
@@ -95,7 +99,7 @@ class Program
 
     static void NoteHook(IntPtr userdata, int adlchannel, int note, int ins, int pressure, double bend)
     {
-        NoteWriter.AppendLine($"    {Time}: Chan{adlchannel} Note{note} Instrument{ins} Pressure{pressure} Bend{bend}");
+        NoteWriter.AppendLine($"    {_time}: Chan{adlchannel} Note{note} Instrument{ins} Pressure{pressure} Bend{bend}");
     }
 
     static WoplFile OplToWopl(GlobalTimbreLibrary oplFile)
@@ -149,11 +153,11 @@ class Program
         {
             _stream = File.Open(filename, FileMode.Create);
             _bw = new BinaryWriter(_stream);
-            _bw.Write(Encoding.ASCII.GetBytes("RIFF")); // Container format chunk
+            _bw.Write("RIFF"u8.ToArray()); // Container format chunk
             _riffSizeOffset = _stream.Position;
             _bw.Write(0); // Dummy write to start with, will be overwritten at the end.
 
-            _bw.Write(Encoding.ASCII.GetBytes("WAVEfmt ")); // Subchunk1 (format metadata)
+            _bw.Write("WAVEfmt "u8.ToArray()); // Subchunk1 (format metadata)
             _bw.Write(16);
             _bw.Write((ushort)1); // Format = Linear Quantisation
             _bw.Write(numChannels); // NumChannels
@@ -162,7 +166,7 @@ class Program
             _bw.Write((ushort)(numChannels * bytesPerSample)); // BlockAlign
             _bw.Write((ushort)(bytesPerSample * 8)); // BitsPerSample
 
-            _bw.Write(Encoding.ASCII.GetBytes("data")); // Subchunk2 (raw sample data)
+            _bw.Write("data"u8.ToArray()); // Subchunk2 (raw sample data)
             _dataSizeOffset = _stream.Position;
             _bw.Write(0); // Dummy write, will be overwritten at the end
         }
@@ -208,7 +212,43 @@ class Program
     {
         using var stream = File.OpenRead(filename);
         using var br = new BinaryReader(stream);
-        return GlobalTimbreLibrary.Serdes(null,
-            new ReaderSerdes(br, br.BaseStream.Length, Encoding.ASCII.GetString, Console.WriteLine));
+        return GlobalTimbreLibrary.Serdes(
+            null,
+            new ReaderSerdes(
+                br,
+                br.BaseStream.Length,
+                Encoding.ASCII.GetString,
+                Console.WriteLine));
+    }
+
+    static void SetupDllLoader()
+    {
+        NativeLibrary.SetDllImportResolver(
+            typeof(AdlMidi).Assembly,
+            (name, assembly, path) =>
+        {
+            var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
+            string filename;
+            string runtime = RuntimeInformation.RuntimeIdentifier;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                filename = string.Equals(Path.GetExtension(name), ".DLL", StringComparison.OrdinalIgnoreCase)
+                    ? name
+                    : name + ".dll";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                filename = string.Equals(Path.GetExtension(name), ".SO", StringComparison.OrdinalIgnoreCase)
+                    ? name
+                    : name + ".so";
+            }
+            else throw new PlatformNotSupportedException();
+
+            var fullPath = Path.Combine(root, "runtimes", runtime, "native", filename);
+            return File.Exists(fullPath)
+                ? NativeLibrary.Load(fullPath)
+                : IntPtr.Zero;
+        });
     }
 }

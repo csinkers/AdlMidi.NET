@@ -8,3 +8,4 @@ packages/
 *.filters
 *.user
 switcher.json
+launchSettings.json

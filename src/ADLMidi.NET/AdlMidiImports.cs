@@ -5,7 +5,7 @@
  * ADLMIDI Library API:   Copyright (c) 2015-2020 Vitaly Novichkov <admin@wohlnet.ru>
  *
  * Library is based on the ADLMIDI, a MIDI player for Linux and Windows with OPL3 emulation:
- * http:// iki.fi/bisqwit/source/adlmidi.html
+ * http://iki.fi/bisqwit/source/adlmidi.html
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public delegate void RawEventHook(IntPtr userData, byte type, byte subType, byte
 /// <param name="bend">Pitch bend offset value</param>
 public delegate void NoteHook(IntPtr userData, int adlChannel, int note, int ins, int pressure, double bend);
 
-static class AdlMidiImports
+internal static class AdlMidiImports
 {
     const string LibraryName = "libadlmidi";
     // public static readonly Version AdlMidiVersion = new(1, 4, 1);
