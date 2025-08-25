@@ -50,7 +50,7 @@ public class WoplInstrument
     /// <summary>
     /// Serialize or deserialize the WoplInstrument
     /// </summary>
-    public static WoplInstrument Serdes(int _, WoplInstrument w, ISerdes s, int version)
+    public static WoplInstrument Serdes(SerdesName _, WoplInstrument w, ISerdes s, int version)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));
         w ??= new WoplInstrument();

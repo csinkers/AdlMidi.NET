@@ -54,7 +54,7 @@ public class TimbreData
     /// <summary>
     /// Serialize or deserialize the TimbreData struct
     /// </summary>
-    public static TimbreData Serdes(int _, TimbreData data, ISerdes s)
+    public static TimbreData Serdes(SerdesName _, TimbreData data, ISerdes s)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));
         data ??= new TimbreData();

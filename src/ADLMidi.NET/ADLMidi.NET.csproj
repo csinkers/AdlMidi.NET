@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>10</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
     <Title>ADLMidi.NET</Title>
     <Authors>Cam Sinclair</Authors>
     <Description>A .NET wrapper for the libADLMIDI library, a free Software MIDI synthesizer library with OPL3 emulation</Description>
     <Copyright>2020 Cam Sinclair</Copyright>
-
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>ADLMidi.NET</PackageId>
     <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
@@ -17,40 +14,33 @@
     <PackageProjectUrl>https://github.com/csinkers/AdlMidi.NET</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
     <RepositoryUrl>https://github.com/csinkers/AdlMidi.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <EmbedAllSources>true</EmbedAllSources>
     <DebugType>Embedded</DebugType>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="SerdesNet" Version="3.1.1" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="SerdesNet" Version="4.0.1" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="runtimes\**" CopyToOutputDirectory="PreserveNewest" PackagePath="runtimes" Visible="false" />
   </ItemGroup>
-
   <Target Name="ApplyGitHubRunNumberToVersion" AfterTargets="MinVer">
     <PropertyGroup>
       <GITHUB_RUN_NUMBER Condition="'$(GITHUB_RUN_NUMBER)' == ''">0</GITHUB_RUN_NUMBER>
       <FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(GITHUB_RUN_NUMBER)</FileVersion>
     </PropertyGroup>
   </Target>
-
 </Project>

@@ -81,7 +81,7 @@ public struct Operator
     /// <summary>
     /// Serializes or deserializes an Operator object
     /// </summary>
-    public static Operator Serdes(string _, Operator o, ISerdes s)
+    public static Operator Serdes(SerdesName _, Operator o, ISerdes s)
     {
         if (s == null) throw new ArgumentNullException(nameof(s));
         o.Flags = s.EnumU8(nameof(Flags), o.Flags);
