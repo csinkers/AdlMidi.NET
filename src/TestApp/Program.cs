@@ -8,7 +8,7 @@ using SerdesNet;
 
 namespace TestApp;
 
-internal class Program
+internal static class Program
 {
     const int SampleRate = 44100;
     const string NewWoplPath = @"C:\Depot\bb\ualbion\albion\DRIVERS\ALBISND_NEW.wopl";
@@ -203,7 +203,7 @@ internal class Program
     {
         using var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
-        WoplFile.Serdes(wopl, new WriterSerdes(bw, Encoding.ASCII.GetBytes, Console.WriteLine));
+        WoplFile.Serdes(wopl, new WriterSerdes(bw, Console.WriteLine));
         byte[] bytes = ms.ToArray();
         File.WriteAllBytes(filename, bytes);
     }
@@ -217,7 +217,6 @@ internal class Program
             new ReaderSerdes(
                 br,
                 br.BaseStream.Length,
-                Encoding.ASCII.GetString,
                 Console.WriteLine));
     }
 

@@ -27,7 +27,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SerdesNet" Version="4.0.1" />
+    <PackageReference Include="SerdesNet" Version="4.1.0" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>

@@ -34,9 +34,11 @@ public class WoplFile
         ushort melodicBanks = (ushort)w.Melodic.Count;
         ushort percussionBanks = (ushort)w.Percussion.Count;
 
-        var magic = s.NullTerminatedString(nameof(Magic), Magic);
-        if(magic != Magic)
+        var magic = s.FixedLengthString(nameof(Magic), Magic, Magic.Length);
+        if (magic != Magic)
             throw new InvalidOperationException("Magic string missing (invalid WOPL file)");
+
+        s.Pad(1);
 
         w.Version = s.UInt16(nameof(Version), w.Version);
         melodicBanks = s.UInt16BE(nameof(melodicBanks), melodicBanks);
@@ -44,18 +46,18 @@ public class WoplFile
         w.GlobalFlags = s.EnumU8(nameof(GlobalFlags), w.GlobalFlags);
         w.VolumeModel = s.EnumU8(nameof(VolumeModel), w.VolumeModel);
 
-        while(w.Melodic.Count < melodicBanks) w.Melodic.Add(new WoplBank());
-        while(w.Percussion.Count < percussionBanks) w.Percussion.Add(new WoplBank());
+        while (w.Melodic.Count < melodicBanks) w.Melodic.Add(new WoplBank());
+        while (w.Percussion.Count < percussionBanks) w.Percussion.Add(new WoplBank());
 
         if (w.Version >= 2)
         {
-            foreach(var bank in w.Melodic)
+            foreach (var bank in w.Melodic)
             {
                 bank.Name = s.FixedLengthString(nameof(bank.Name), bank.Name, WoplBank.MaxNameLength);
                 bank.Id = s.UInt16(nameof(bank.Id), bank.Id);
             }
 
-            foreach(var bank in w.Percussion)
+            foreach (var bank in w.Percussion)
             {
                 bank.Name = s.FixedLengthString(nameof(bank.Name), bank.Name, WoplBank.MaxNameLength);
                 bank.Id = s.UInt16(nameof(bank.Id), bank.Id);
@@ -107,7 +109,7 @@ public class WoplFile
         Melodic.Add(new WoplBank { Id = 0, Name = "" });
         Percussion.Add(new WoplBank { Id = 0, Name = "" });
 
-        for(int i = 0; i < timbreLibrary.Data.Count; i++)
+        for (int i = 0; i < timbreLibrary.Data.Count; i++)
         {
             var timbre = timbreLibrary.Data[i];
             WoplInstrument x =
@@ -141,7 +143,7 @@ public class WoplFile
     {
         using var ms = new MemoryStream();
         using var bw = new BinaryWriter(ms);
-        using var gbw = new WriterSerdes(bw, Encoding.ASCII.GetBytes, assertionFailed);
+        using var gbw = new WriterSerdes(bw, assertionFailed);
         Serdes(this, gbw);
         return ms.ToArray();
     }
