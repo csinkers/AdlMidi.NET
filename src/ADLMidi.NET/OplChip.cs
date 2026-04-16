@@ -9,21 +9,24 @@ namespace ADLMidi.NET;
 /// libadlmidi's MIDI / bank / sequencer layers. Intended for use cases that
 /// synthesize their own register streams (e.g. Ultima Underworld TVFX effects).
 ///
-/// The underlying native code exports <c>OPL3_Reset</c>, <c>OPL3_WriteReg</c>,
-/// and <c>OPL3_GenerateStream</c> but not an allocator — so we carve the
-/// <c>opl3_chip</c> struct out of unmanaged memory directly. Allocating 64 KB
-/// gives ~10 KB headroom over the measured struct size of the current
-/// libadlmidi nuked-opl3 build. If a future libadlmidi update grows the struct
-/// beyond this, crashes will surface immediately in tests; bump the constant.
+/// Backed by libadlmidi's <c>adl_barechip_*</c> ABI (opaque-handle allocator +
+/// write / generate / reset). These symbols are exported with
+/// <c>ADLMIDI_DECLSPEC</c> so they are visible in the shared library across
+/// all platforms; the earlier revision of this class P/Invoked the raw
+/// <c>OPL3_*</c> helpers which are internal to libadlmidi and not exported
+/// from the Windows DLL or Linux .so.
 /// </summary>
 public sealed class OplChip : IDisposable
 {
-    private const int ChipStructBytes = 65536;
-
     private IntPtr _chip;
     private bool _disposed;
+    private readonly int _sampleRateHz;
 
-    private OplChip(IntPtr chip) { _chip = chip; }
+    private OplChip(IntPtr chip, int sampleRateHz)
+    {
+        _chip = chip;
+        _sampleRateHz = sampleRateHz;
+    }
 
     /// <summary>
     /// Create a chip initialised for the given sample rate. The chip behaves as
@@ -34,23 +37,17 @@ public sealed class OplChip : IDisposable
     {
         if (sampleRateHz <= 0) throw new ArgumentOutOfRangeException(nameof(sampleRateHz));
 
-        IntPtr mem = Marshal.AllocHGlobal(ChipStructBytes);
-        // OPL3_Reset() zero-inits the struct internally, but explicit zeroing
-        // ahead of time is cheap insurance against UB if the native layout
-        // ever adds a field the reset path forgets.
-        unsafe
-        {
-            new Span<byte>((void*)mem, ChipStructBytes).Clear();
-        }
-        Native.OPL3_Reset(mem, (uint)sampleRateHz);
-        return new OplChip(mem);
+        IntPtr handle = Native.adl_barechip_new(sampleRateHz);
+        if (handle == IntPtr.Zero)
+            throw new InvalidOperationException("adl_barechip_new returned null");
+        return new OplChip(handle, sampleRateHz);
     }
 
     /// <summary>Write <paramref name="val"/> to OPL register <paramref name="addr"/>.</summary>
     public void WriteReg(int addr, byte val)
     {
         ThrowIfDisposed();
-        Native.OPL3_WriteReg(_chip, (ushort)addr, val);
+        Native.adl_barechip_write_reg(_chip, (uint)addr, val);
     }
 
     /// <summary>
@@ -65,20 +62,14 @@ public sealed class OplChip : IDisposable
         if (interleavedStereo.Length < frames * 2)
             throw new ArgumentException("buffer smaller than 2 * frames", nameof(interleavedStereo));
         if (frames == 0) return;
-        Native.OPL3_GenerateStream(_chip, interleavedStereo, (uint)frames);
+        Native.adl_barechip_generate(_chip, frames, interleavedStereo);
     }
 
     /// <summary>Reset the chip to its power-on state, preserving sample rate.</summary>
     public void Reset()
     {
         ThrowIfDisposed();
-        // Sample rate is stashed inside the struct; OPL3_Reset accepts a new rate
-        // on each call. Re-read the current rateratio/samplecnt by re-resetting
-        // at a cached rate. We don't track it — callers re-create the chip when
-        // sample rate changes — so Reset() rebuilds at a nominal 44100.
-        //
-        // Callers who need a different rate on reset should Dispose + Create.
-        Native.OPL3_Reset(_chip, 44100);
+        Native.adl_barechip_reset(_chip, _sampleRateHz);
     }
 
     /// <summary>Release the chip's unmanaged memory.</summary>
@@ -88,7 +79,7 @@ public sealed class OplChip : IDisposable
         _disposed = true;
         if (_chip != IntPtr.Zero)
         {
-            Marshal.FreeHGlobal(_chip);
+            Native.adl_barechip_free(_chip);
             _chip = IntPtr.Zero;
         }
         GC.SuppressFinalize(this);
@@ -106,14 +97,20 @@ public sealed class OplChip : IDisposable
     {
         private const string Lib = "libadlmidi";
 
-        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "OPL3_Reset")]
-        public static extern void OPL3_Reset(IntPtr chip, uint sampleRate);
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_barechip_new")]
+        public static extern IntPtr adl_barechip_new(int sampleRateHz);
 
-        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "OPL3_WriteReg")]
-        public static extern void OPL3_WriteReg(IntPtr chip, ushort reg, byte val);
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_barechip_free")]
+        public static extern void adl_barechip_free(IntPtr chip);
 
-        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "OPL3_GenerateStream")]
-        public static extern void OPL3_GenerateStream(IntPtr chip,
-            [In, Out] short[] buf, uint numFrames);
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_barechip_write_reg")]
+        public static extern void adl_barechip_write_reg(IntPtr chip, uint addr, byte val);
+
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_barechip_generate")]
+        public static extern void adl_barechip_generate(IntPtr chip, int frames,
+            [In, Out] short[] outBuf);
+
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_barechip_reset")]
+        public static extern void adl_barechip_reset(IntPtr chip, int sampleRateHz);
     }
 }
