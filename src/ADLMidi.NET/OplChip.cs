@@ -13,9 +13,9 @@ namespace ADLMidi.NET;
 /// branch on abedegno/libADLMIDI):
 ///
 /// <list type="bullet">
-///  <item><c>adl_rt_rawOplCommand(device, chipId, reg, val)</c> — writes one
-///        register on a specific chip, reusing the same internal path that
-///        IMF/KLM file playback uses.</item>
+///  <item><c>adl_rt_rawOPL3(device, chipId, reg, val)</c> — writes one
+///        OPL3 register on a specific chip, reusing the same internal path
+///        that IMF/KLM file playback uses.</item>
 ///  <item><c>adl_reserveChipChannels(device, chipId, mask)</c> — marks chip
 ///        channels as off-limits to the MIDI voice allocator so music
 ///        playback and raw SFX writes can coexist on the same chip.</item>
@@ -108,9 +108,9 @@ public sealed class OplChip : IDisposable
     public void WriteReg(int addr, byte val)
     {
         ThrowIfDisposed();
-        int rc = Native.adl_rt_rawOplCommand(_device, _chipId, (ushort)addr, val);
+        int rc = Native.adl_rt_rawOPL3(_device, _chipId, (ushort)addr, val);
         if (rc == 0)
-            throw new InvalidOperationException("adl_rt_rawOplCommand returned 0 (invalid chipId?)");
+            throw new InvalidOperationException("adl_rt_rawOPL3 returned 0 (invalid chipId?)");
     }
 
     /// <summary>
@@ -176,8 +176,8 @@ public sealed class OplChip : IDisposable
     {
         private const string Lib = "libadlmidi";
 
-        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_rt_rawOplCommand")]
-        public static extern int adl_rt_rawOplCommand(IntPtr device, int chipId, ushort reg, byte value);
+        [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_rt_rawOPL3")]
+        public static extern int adl_rt_rawOPL3(IntPtr device, int chipId, ushort reg, byte value);
 
         [DllImport(Lib, CallingConvention = CallingConvention.Cdecl, EntryPoint = "adl_reserveChipChannels")]
         public static extern int adl_reserveChipChannels(IntPtr device, int chipId, uint channelMask);
