@@ -5,13 +5,22 @@ namespace ADLMidi.NET.Tests;
 
 public class DllImportFixture : IDisposable
 {
-    // Workaround for the terrible support of native dependencies with ProjectReferences
+    private static readonly object _resolverLock = new();
+    private static bool _resolverSet;
+
+    // Workaround for the terrible support of native dependencies with ProjectReferences.
+    // SetDllImportResolver can only be called once per assembly per process, so we
+    // guard it across multiple test classes sharing this fixture.
     public DllImportFixture()
     {
-        NativeLibrary.SetDllImportResolver(
-            typeof(AdlMidi).Assembly,
-            (name, assembly, path) =>
-            {
+        lock (_resolverLock)
+        {
+            if (_resolverSet) return;
+            _resolverSet = true;
+            NativeLibrary.SetDllImportResolver(
+                typeof(AdlMidi).Assembly,
+                (name, assembly, path) =>
+                {
                 var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 
                 string filename;
@@ -41,6 +50,7 @@ public class DllImportFixture : IDisposable
                     ? NativeLibrary.Load(fullPath)
                     : IntPtr.Zero;
             });
+        }
     }
 
     public void Dispose() { }

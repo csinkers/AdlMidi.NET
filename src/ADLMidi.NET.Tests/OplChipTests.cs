@@ -17,9 +17,15 @@ public class OplChipTests : IClassFixture<DllImportFixture>
         foreach (var s in buf) Assert.Equal(0, s);
     }
 
-    // Drives a minimal OPL2 note-on on channel 0 and asserts the chip produces
-    // audible output. This is not a tone-accuracy check — just a smoke test that
-    // our Write/Generate sequence reaches nuked-opl3's audio path.
+    // Drives a minimal OPL2-compatible note-on on channel 0 and asserts the
+    // chip produces audible output. Not a tone-accuracy check — just a smoke
+    // test that our Write/Generate sequence reaches the emulator's audio path.
+    //
+    // OplChip.Create() leaves the chip in the OPL3-extended state that
+    // libadlmidi's MIDIplay::applySetup initialises on every new device, so we
+    // must set the OPL3 panning bits (0xC0 bits 4-5) to enable L/R output —
+    // in OPL2 mode those bits are don't-cares, but in OPL3 mode (0x105=1)
+    // they gate the mixer. This matches how real OPL3-aware drivers behave.
     [Fact]
     public void Note_on_channel_0_generates_nonzero_samples()
     {
@@ -36,7 +42,7 @@ public class OplChipTests : IClassFixture<DllImportFixture>
         chip.WriteReg(0x83, 0x00);  // carrier:   SL=0 RR=0
         chip.WriteReg(0xA0, 0x98);  // FNum low
         chip.WriteReg(0xB0, 0x31);  // KeyOn=1, Block=2, FNum-high=1
-        chip.WriteReg(0xC0, 0x01);  // FB=0, CON=1 (additive)
+        chip.WriteReg(0xC0, 0x31);  // FB=0, CON=1, OPL3 L+R pan bits enabled
 
         var buf = new short[2 * 4096];
         chip.GenerateFrames(buf, 4096);
