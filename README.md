@@ -45,6 +45,33 @@ make
 cp -L libADLMIDI.so ../../ADLMidi.NET/runtimes/linux-x64/native
 ```
 
+## macOS (Apple Silicon):
+Requires Xcode command-line tools and CMake. Tested on macOS 14 (arm64); the same flags should also produce an x86_64 dylib if `-DCMAKE_OSX_ARCHITECTURES=x86_64` is passed (untested here). cmake produces a versioned dylib (`libADLMIDI.1.6.2.dylib`) plus two install-name symlinks; copy the unversioned `libADLMIDI.dylib` and rename to `libadlmidi.dylib` to match the cross-platform lowercase name the wrapper P/Invokes.
+
+```
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release       \
+      -DCMAKE_OSX_ARCHITECTURES=arm64  \
+      -DlibADLMIDI_STATIC=OFF          \
+      -DlibADLMIDI_SHARED=ON           \
+      -DWITH_EMBEDDED_BANKS=OFF        \
+      -DWITH_XMI_SUPPORT=ON            \
+      -DUSE_DOSBOX_EMULATOR=OFF        \
+      -DUSE_NUKED_EMULATOR=ON          \
+      -DUSE_OPAL_EMULATOR=OFF          \
+      -DUSE_JAVA_EMULATOR=OFF          \
+      -DUSE_ESFMU_EMULATOR=OFF         \
+      -DUSE_MAME_EMULATOR=OFF          \
+      -DUSE_YMFM_EMULATOR=OFF          \
+      ..
+make
+[ -d ../../ADLMidi.NET/runtimes/osx-arm64/native ] || mkdir -p ../../ADLMidi.NET/runtimes/osx-arm64/native
+cp -L libADLMIDI.dylib ../../ADLMidi.NET/runtimes/osx-arm64/native/libadlmidi.dylib
+```
+
+The linker produces an adhoc code signature automatically on Apple Silicon (no manual `codesign` step needed). Verify with `codesign -dv libadlmidi.dylib` (expect `Signature=adhoc`).
+
 ## Windows:
 * Run CMake setup program
 * Pick libADLMIDI directory
